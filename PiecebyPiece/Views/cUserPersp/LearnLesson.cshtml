@@ -1,0 +1,123 @@
+﻿@model PiecebyPiece.Models.mLESSON
+
+@{
+    Layout = "~/Views/Shared/_Layout_Navbar.cshtml";
+}
+
+<div class="container overflow-hidden text-center" style="background-color:white; border-radius:15px; padding:50px;">
+    <div class="row">
+        <div class="col-md-6 text-start">
+            @{
+                var currentVideo = Model.VideoEPs
+                .FirstOrDefault(v => v.vdoID == ViewBag.CurrentEPID);
+            }
+            <div id="videoPlayerArea">
+                @if (currentVideo != null)
+                {
+                    <iframe id="mainVideo"
+                            width="100%" height="315"
+                            src="@currentVideo.vdoFilePath"
+                            frameborder="0"
+                            allowfullscreen>
+                    </iframe>
+
+                    <div class="justify-content-between align-items-center" style="margin:15px 0;">
+                        <h3 id="videoTitle" class="text-start m-0" style="margin:15px 0;">@currentVideo.vdoName</h3>
+                        <p>@Model.lessonDescription</p>
+                    </div>
+                }
+            </div>
+
+        </div>
+
+        <div class="col-md-6 lesson-content-container">
+            <!-- Episode Section Collapse -->
+            <div class="episode-container collapsible">
+                <button class="btn-collapse" type="button" onclick="toggleCollapse(this)">
+                    <h4>@Model.lessonName</h4> <i class="bi bi-caret-down arrow"></i>
+                </button>
+
+                <div class="collapse-content">
+                    <div class="section-header">
+                        <h5 class="section-title" style="margin:15px 0; color:white;">All Episodes</h5>
+                    </div>
+
+                    <!-- Episode Content List -->
+                    @if (Model.VideoEPs != null && Model.VideoEPs.Any())
+                    {
+                        <ul class="list-group">
+                            @foreach (var ep in Model.VideoEPs)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center"
+                                    style="cursor:pointer"
+                                    onclick="changeEpisode('@ep.vdoFilePath', '@ep.vdoName', '@ep.epFilePath')">
+
+                                    <div>
+                                        <strong>@ep.vdoName</strong>
+                                    </div>
+
+                                    @if (!string.IsNullOrEmpty(ep.epFilePath))
+                                    {
+                                        <a href="@ep.epFilePath"
+                                           target="_blank"
+                                           class="btn btn-yellow-icon"
+                                           onclick="event.stopPropagation();">
+                                            <i class="bi bi-paperclip"></i>
+                                        </a>
+                                    }
+                                </li>
+
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No episodes available yet.</p>
+                    }
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-4">
+
+        <!-- ปุ่มย้อนกลับ -->
+        @if (ViewBag.PrevLessonID != null)
+        {
+            <a asp-controller="cUserPersp"
+               asp-action="LearnLesson"
+               asp-route-lessonID="@ViewBag.PrevLessonID"
+               class="btn btn-yellow">
+                <i class="bi bi-arrow-left"></i> Previous Lesson
+            </a>
+        }
+        else
+        {
+            <a asp-controller="cUserPersp"
+               asp-action="MyCourse"
+               class="btn btn-yellow">
+                <i class="bi bi-arrow-left"></i> Back to My Course
+            </a>
+        }
+
+        <!-- ปุ่ม Test Ready -->
+        <a asp-controller="cUserPersp"
+           asp-action="TestStart"
+           asp-route-testID="@Model.Test.testID"
+           class="btn btn-black">
+            Test Ready? <i class="bi bi-arrow-right"></i>
+        </a>
+
+    </div>
+
+</div>
+
+<script>
+    function changeEpisode(videoUrl, videoName) {
+        document.getElementById("mainVideo").src = videoUrl;
+        document.getElementById("videoTitle").innerText = videoName;
+    }
+</script>
+

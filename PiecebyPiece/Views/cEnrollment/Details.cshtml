@@ -1,0 +1,147 @@
+﻿@model PiecebyPiece.Models.mENROLLMENT
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+<center><span class="header-title">Enrollment Details</span></center>
+
+
+<div class="box-body">
+    <!-- Action Bar -->
+    <div class="action-bar">
+        <div class="left-actions">
+            <a asp-action="Index" class="btn btn-mint-icon" aria-label="button"><i class="bi bi-arrow-left"></i></a>
+            <a asp-action="Edit" asp-route-id="@Model?.enrollID" class="btn btn-yellow-icon" aria-label="button"><i class="bi bi-pencil"></i></a>
+        </div>
+
+        <div class="right-actions">
+            <a class="btn btn-pink-icon btn-delete-modal" aria-label="button"
+               data-delete-url="@Url.Action("Delete", new { id = Model?.enrollID })"
+               data-enroll-id="@Model?.enrollID"
+               data-user-id="@Model?.userID"
+               data-enroll-course="@Model?.courseName"
+               href="#">
+                <i class="bi bi-trash"></i>
+            </a>
+        </div>
+    </div>
+
+
+    <!-- Enrollment Infomation -->
+
+    <table class="info-table" style="margin-top:20px;">
+        <tr>
+            <th>ID</th>
+            <td>
+                @Html.DisplayFor(model => model.enrollID)
+            </td>
+        </tr>
+        <tr>
+            <th>Enroll on</th>
+            <td>
+                @Html.DisplayFor(model => model.enrollTime)
+            </td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td>
+                @Html.DisplayFor(model => model.enrollStatus)
+            </td>
+        </tr>
+        <tr>
+            <th>Fullname</th>
+            <td>
+                @Html.DisplayFor(model => model.User.userName) @Html.DisplayFor(model => model.User.userSurname)
+            </td>
+        </tr>
+        <tr>
+            <th>Course</th>
+            <td>
+                #@Html.DisplayFor(model => model.courseName) - @Html.DisplayFor(model => model.courseName)
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+
+
+
+<div class="modal fade" id="deleteCourseConfirmModal" tabindex="-1" aria-labelledby="deleteCourseConfirmModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteCourseConfirmModalLabel"><i class="bi bi-exclamation-triangle-fill me-2"></i> Confirm Course Deletion</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" aria-label="button"></button>
+            </div>
+
+
+            <div class="modal-body text-start">
+                <p class="mb-2"><strong>Are you sure you want to delete this course?</strong></p>
+                <p class="mb-1">All associated data will also be removed:</p>
+                <ul class="list-unstyled ms-3">
+                    <li><i class="bi bi-x-circle-fill text-danger me-2"></i> Lessons</li>
+                    <li><i class="bi bi-x-circle-fill text-danger me-2"></i> Tests</li>
+                    <li><i class="bi bi-x-circle-fill text-danger me-2"></i> Related Data (e.g., Certificate links)</li>
+                </ul>
+                <p class="mt-3 mb-3"><strong>This action cannot be undone.</strong></p>
+                <p class="text-muted small">
+                    ID: <strong id="enrollIdToDelete" class="text-danger"></strong> | Course: <strong id="courseNameToDelete" class="text-danger"></strong> | User: <strong id="userIdToDelete" class="text-danger"></strong>
+                </p>
+                <form id="deleteEnrollmentForm" method="post" style="display: none;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="deleteEnrollmentIdInput" name="id" />
+                </form>
+            </div>
+
+
+
+            <div class="modal-footer">
+                <a id="confirmCourseDeleteButton" class="btn btn-danger" aria-label="button">
+                    Disenrollment
+                </a>
+
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="button">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.btn-delete-modal').on('click', function (e) {
+                e.preventDefault();
+
+                var enrollId = $(this).data('enroll-id');
+                var userId = $(this).data('user-id');
+                var courseName = $(this).data('enroll-course');
+                var deleteUrl = $(this).data('delete-url');
+
+                $('#enrollIdToDelete').text(enrollId);
+                $('#courseNameToDelete').text(courseName);
+                $('#userIdToDelete').text(userId);
+                $('#deleteEnrollmentIdInput').val(enrollId);
+                $('#deleteEnrollmentForm').attr('action', deleteUrl);
+
+                var deleteCourseModal = new bootstrap.Modal(document.getElementById('deleteCourseConfirmModal'));
+                deleteCourseModal.show();
+            });
+
+            $('#confirmCourseDeleteButton').on('click', function () {
+                $('#deleteEnrollmentForm').submit();
+            });
+        });
+    </script>
+}
+
+
+
+
+
+
+
+

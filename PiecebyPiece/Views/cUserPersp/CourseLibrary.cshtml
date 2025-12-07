@@ -1,0 +1,94 @@
+﻿@model IEnumerable<PiecebyPiece.Models.mCOURSE>
+
+@{
+    ViewData["Title"] = "CourseLibrary";
+    Layout = "~/Views/Shared/_Layout_Navbar.cshtml";
+    var selectedSubjects = ViewBag.SelectedSubjects as List<string>;
+}
+
+
+
+<div class="box-body">
+    <link href="~/css/PraewaStyle.css" rel="stylesheet">
+
+    <div class="text-center">
+        <h1 class="display-4" style="padding-bottom:50px">Course Library</h1>
+    </div>
+
+    <form asp-action="CourseLibrary" method="get" id="filterForm" class="mb-3">
+        <!-- Search -->
+        <div class="input-group mb-2">
+            <input type="text" name="cSearch" class="form-control custom-search-input" value="@Context.Request.Query["cSearch"]" placeholder="Search..." />
+            <button class="btn-black" type="submit">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
+        <!-- Filter -->
+        <div class="mb-2 d-flex align-items-center flex-wrap gap-2" style="margin-left: 10px;">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-funnel-fill filter-icon me-2" style="color:#49454F;"></i>
+                <span class="fw-semibold" style="color:#49454F;">Subject Filter:</span>
+            </div>
+
+            <div class="d-flex flex-wrap gap-1">
+                @{
+                    var subjects = new List<string> { "MTH", "PROD", "COD", "PHY", "ART" };
+                }
+
+                @foreach (var subject in subjects)
+                {
+                    bool isActive = selectedSubjects.Contains(subject);
+                    <input type="checkbox" class="btn-check subject-filter" name="cFilter" value="@subject" id="btn-@subject" autocomplete="off" @(isActive ? "checked" : "") />
+                    <label class="btn-filter @(isActive ? "active" : "")" for="btn-@subject">@subject.ToUpper()</label>
+                }
+            </div>
+        </div>
+
+    </form>
+
+    <div class="container text-center" style="padding:50px">
+
+        @{
+            var enrolledCourseIDs = ViewBag.EnrolledCourseIDs as HashSet<int>;
+        }
+
+        <div class="row row-cols-1 row-cols-md-3 g-4" style="margin-top:50px">
+            @foreach (var course in Model)
+            {
+                <div class="col">
+                    <a asp-controller="cUserPersp" asp-action="CourseDetails" asp-route-id="@course.courseID" class="text-decoration-none text-dark">
+                        <div class="card h-100">
+                            @if (!string.IsNullOrEmpty(course.coursePhotoPath))
+                            {
+                                <img src="@course.coursePhotoPath" class="card-img-top" alt="@course.courseName" style="height:200px; object-fit:cover;" />
+                            }
+                            <div class="card-body text-start">
+                                <h5 class="card-title">@course.courseName</h5>
+                                <p class="card-text">
+                                    Subject: @course.courseSubject <br />
+                                    @course.courseDescription
+                                </p>
+
+                                @if (enrolledCourseIDs.Contains(course.courseID))
+                                {
+                                    <a class="btn btn-disabled disabled-link">Enrolled</a>
+                                }
+                                else
+                                {
+                                    <a asp-controller="cUserPersp"
+                                       asp-action="EnrollCourse"
+                                       asp-route-courseID="@course.courseID"
+                                       class="btn btn-yellow">
+                                        Enroll
+                                    </a>
+
+                                }
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+

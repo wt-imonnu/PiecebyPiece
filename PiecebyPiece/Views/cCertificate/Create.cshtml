@@ -1,0 +1,132 @@
+﻿@model PiecebyPiece.Models.mCERTIFICATE
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+<center><span class="header-title">Create Certificate</span></center>
+
+
+<div class="row">
+    <form asp-action="Create" id="createCertificateForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="box-body-sm">
+            <div id="statusMessage" class="mt-3"></div>
+
+            <div class="form-group">
+                <label asp-for="enrollID" class="control-label">Enrollment ID</label>
+                <select asp-for="enrollID" class="form-control" asp-items="ViewBag.enrollID" id="enrollIDSelect">
+                    <center>
+                    <option value="">-- Select Enrollment ID --</option></center>
+                </select>
+                <span asp-validation-for="enrollID" class="text-danger"></span>
+            </div>
+            <hr />
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="userName" class="control-label">First Name</label>
+                        <input asp-for="userName" class="form-control" readonly />
+                        <span asp-validation-for="userName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="userSurname" class="control-label">Last Name</label>
+                        <input asp-for="userSurname" class="form-control" readonly />
+                        <span asp-validation-for="userSurname" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label asp-for="courseName" class="control-label">Course Name</label>
+                        <input asp-for="courseName" class="form-control" readonly />
+                        <span asp-validation-for="courseName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="cerDate" class="control-label">Certificate Issue Date</label>
+                        <input asp-for="cerDate" class="form-control" />
+                        <span asp-validation-for="cerDate" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-md-6 mb-2">
+                <a asp-action="Index" class="btn-cancel" aria-label="button">Cancle</a>
+            </div>
+            <div class="col-md-6">
+                <input type="submit" value="Save" class="btn-save" aria-label="button" />
+            </div>
+        </div>
+    </form>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            const $enrollSelect = $('#enrollIDSelect');
+            const $courseNameInput = $('[name="courseName"]');
+            const $userNameInput = $('[name="userName"]');
+            const $userSurnameInput = $('[name="userSurname"]');
+            const $statusMessage = $('#statusMessage');
+            const $submitButton = $('#submitButton');
+
+            function resetFormState() {
+                $courseNameInput.val('');
+                $userNameInput.val('');
+                $userSurnameInput.val('');
+                $statusMessage.html('');
+                $submitButton.prop('disabled', true);
+            }
+
+            resetFormState();
+
+            $enrollSelect.on('change', function () {
+                const enrollId = $(this).val();
+
+                resetFormState();
+
+                if (enrollId === "") {
+                    return;
+                }
+
+                $.ajax({
+                    url: '@Url.Action("GetEnrollmentData", "cCertificate")',
+                    type: 'GET',
+                    data: { enrollId: enrollId },
+                    success: function (response) {
+                        if (response.error) {
+                            $statusMessage.html('<div class="alert alert-warning"><strong>Warning!</strong> ' + response.error + '</div>');
+                        } else if (response.courseName) {
+                            $courseNameInput.val(response.courseName);
+                            $userNameInput.val(response.userName);
+                            $userSurnameInput.val(response.userSurname);
+                            $statusMessage.html('<div class="alert alert-success">Enrollment data loaded successfully. Ready to create certificate.</div>');
+                            $submitButton.prop('disabled', false);
+                        } else {
+                            $statusMessage.html('<div class="alert alert-danger">Error: Enrollment data could not be found or is incomplete.</div>');
+                        }
+                    },
+                    error: function () {
+                        $statusMessage.html('<div class="alert alert-danger">An unexpected error occurred while fetching data.</div>');
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,178 @@
+﻿@model IEnumerable<PiecebyPiece.Models.mCERTIFICATE>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+
+
+<center><span class="header-title">Certificates Panel</span></center>
+
+
+
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+
+    var activeClass = "nav-item-active";
+}
+
+<style>
+    .nav-item-active {
+        border-radius: 100px;
+        background-color: #5AB2A6;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+        .nav-item-active .nav-link {
+            color: #fff !important;
+            text-decoration: none;
+        }
+</style>
+<div class="box-body" style="padding: 10px; margin-bottom: 20px;">
+    <div class="d-flex justify-content-center" style="white-space: nowrap;">
+        <ul class="nav nav-pills admin-sub-nav">
+            <li class="nav-item @(currentController == "cEnrollment" ? activeClass : "")" style="margin: 0 5px;">
+                <a class="nav-link text-dark" asp-area="" asp-controller="cEnrollment" asp-action="Index" style="font-weight:600;">Enrollment</a>
+            </li>
+            <li class="nav-item @(currentController == "cCourse" ? activeClass : "")" style="margin: 0 5px;">
+                <a class="nav-link text-dark" asp-area="" asp-controller="cCourse" asp-action="Index" style="font-weight:600;">Course</a>
+            </li>
+            <li class="nav-item @(currentController == "cCertificate" ? activeClass : "")" style="margin: 0 5px;">
+                <a class="nav-link text-dark" asp-area="" asp-controller="cCertificate" asp-action="Index" style="font-weight:600;">Certificate</a>
+            </li>
+            <li class="nav-item @(currentController == "cUser" ? activeClass : "")" style="margin: 0 5px;">
+                <a class="nav-link text-dark" asp-area="" asp-controller="cUser" asp-action="Index" style="font-weight:600;">User</a>
+            </li>
+            <li class="nav-item @(currentController == "cAdminPanel" ? activeClass : "")" style="margin: 0 5px;">
+                <a class="nav-link text-dark" asp-area="" asp-controller="cAdminPanel" asp-action="Index" style="font-weight:600;">Admin</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+
+
+@{
+    var selectedSubjects = ViewBag.SelectedSubjects as List<string>;
+}
+<div class="box-body">
+    <form asp-action="Index" method="get" id="filterForm" class="mb-3">
+        <!-- Search -->
+        <div class="input-group mb-2">
+            <input type="text" name="cSearch" class="form-control custom-search-input" value="@Context.Request.Query["cSearch"]" placeholder="Search..." />
+            <button class="btn-black" type="submit" aria-label="Search">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
+        <!-- Filter -->
+        <div class="mb-2 d-flex align-items-center flex-wrap gap-2" style="margin-left: 10px;">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-funnel-fill filter-icon me-2" style="color:#49454F;"></i>
+                <span class="fw-semibold" style="color:#49454F;">Subject Filter:</span>
+            </div>
+
+            <div class="d-flex flex-wrap gap-1">
+                @{
+                    var subjects = new List<string> { "MTH", "PROD", "COD", "PHY", "ART" };
+                }
+
+                @foreach (var subject in subjects)
+                {
+                    bool isActive = selectedSubjects.Contains(subject);
+                    <input type="checkbox" class="btn-check subject-filter" name="cFilter" value="@subject" id="btn-@subject" autocomplete="off" @(isActive ? "checked" : "") />
+                    <label class="btn-filter @(isActive ? "active" : "")" for="btn-@subject">@subject.ToUpper()</label>
+                }
+            </div>
+        </div>
+    </form>
+
+    <div>
+        <!-- Section Header -->
+
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>Fullname</th>
+                    <th>Course</th>
+                    <th style="white-space: nowrap;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.cerID)</td>
+                        <td>@Html.DisplayFor(modelItem => item.cerDate)</td>
+                        <td>@Html.DisplayFor(modelItem => item.userName) @Html.DisplayFor(modelItem => item.userSurname)</td>
+
+                        <td style="white-space: normal;word-wrap: break-word;word-break: break-word;">
+                            @Html.DisplayFor(modelItem => item.courseName)
+                            <div class="card-id">(Enroll ID: #@Html.DisplayFor(modelItem => item.enrollID))</div>
+                        </td>
+
+                        <td style="white-space: nowrap;">
+                            <a asp-action="Details" asp-route-id="@item.cerID" class=" btn btn-black-icon" aria-label="button"><i class="bi bi-info-circle-fill"></i></a>
+                            <a asp-action="Edit" asp-route-id="@item.cerID" class="btn btn-yellow-icon" aria-label="button"><i class="bi bi-pencil"></i></a>
+                            <a class="btn btn-pink-icon btn-delete-modal"
+                               data-delete-url="@Url.Action("Delete", new { id = item.cerID })"
+                               data-cert-id="@item.cerID"
+                               href="#">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+
+</div>
+
+
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteConfirmModalLabel"><i class="bi bi-exclamation-triangle-fill me-2"></i> Confirm Deletion</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this certificate? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <a id="confirmDeleteButton" class="btn btn-danger" aria-label="button">
+                    Delete Certificate
+                </a>
+
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="button">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+
+            $('.btn-delete-modal').on('click', function (e) {
+                e.preventDefault();
+
+                var deleteUrl = $(this).data('delete-url');
+                var certId = $(this).data('cert-id');
+
+                $('#certIdToDelete').text(certId);
+                $('#confirmDeleteButton').attr('href', deleteUrl);
+                deleteModal.show();
+            });
+        });
+    </script>
+}

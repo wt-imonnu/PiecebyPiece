@@ -1,0 +1,528 @@
+﻿@model PiecebyPiece.Models.mLESSON
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+}
+
+@Html.AntiForgeryToken()
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+<center><span class="header-title">Lesson Details</span></center>
+
+
+
+<div class="box-body">
+    <!-- Action Bar -->
+    <div class="action-bar">
+        <div class="left-actions">
+            <a asp-controller="cCourse" asp-action="Details" asp-route-id="@Model?.courseID" class="btn btn-mint-icon" aria-label="button"><i class="bi bi-arrow-left"></i></a>
+            <a asp-controller="cLesson" asp-action="Edit" asp-route-id="@Model?.lessonID" class="btn btn-yellow-icon" aria-label="button"><i class="bi bi-pencil"></i></a>
+        </div>
+
+        <div class="right-actions">
+            <a class="btn btn-pink-icon btn-delete-lesson-modal" aria-label="button"
+               data-delete-url="@Url.Action("Delete", "cLesson", new { id = Model?.lessonID })"
+               data-lesson-id="@Model?.lessonID"
+               data-lesson-name="@Model?.lessonName"
+               data-course-id="@Model?.courseID" href="#">
+                <i class="bi bi-trash"></i>
+            </a>
+        </div>
+    </div>
+    <hr />
+
+    <!-- Lesson Infomation -->
+    <center>
+        <div class="section-title">@Html.DisplayFor(model => model.lessonName)</div>
+        <div class="card-id">#@Html.DisplayFor(model => model.Course.courseSubject)-@Html.DisplayFor(model => model.Course.courseID)-@Html.DisplayFor(model => model.lessonID) | @Html.DisplayFor(model => model.Course.courseName)</div>
+    </center>
+    <table class="info-table" style="margin-top:20px;">
+        <tr>
+            <th>Description:</th>
+            <td>
+                @Html.DisplayFor(model => model.lessonDescription)
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+
+
+<div class="box-body" style="margin-top: 20px;">
+    <!-- Episode Section Collapse -->
+    <div class="episode-container collapsible">
+        <button class="btn-collapse" type="button" onclick="toggleCollapse(this)">
+            <h4>Episodes</h4> <i class="bi bi-caret-down arrow"></i>
+        </button>
+
+        <div class="collapse-content">
+            <div class="section-header">
+                <h5 class="section-title" style="margin:15px 0;">All Episodes</h5>
+                <a asp-controller="cVideoEP" asp-action="Create" asp-route-lessonID="@Model.lessonID" class="btn btn-black" aria-label="button">+ Add Episode</a>
+            </div>
+
+            <!-- Episode Content List -->
+            @if (Model.VideoEPs != null && Model.VideoEPs.Any())
+            {
+                <div class="course-container">
+                    @foreach (var ep in Model.VideoEPs)
+                    {
+                        <a asp-controller="cVideoEP" asp-action="Details" asp-route-id="@ep.vdoID" class="card-link" aria-label="button">
+                            <div class="card-course border-top">
+                                <div class="card-table">
+                                    <table>
+                                        <colgroup>
+                                            <col style="width:50px">
+                                            <col style="width:auto">
+                                            <col style="width:120px">
+                                        </colgroup>
+                                        <tr>
+                                            <td class="card-col1">
+                                                <i class="bi bi-play-btn-fill ep-icon" style="color: #FF0000;"></i>
+                                            </td>
+                                            <td class="card-col2">
+                                                <div class="card-id">#@ep.vdoID</div>
+                                                <div class="card-title">@ep.vdoName</div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>
+                                                <div style="text-align:left">
+                                                    @if (!string.IsNullOrEmpty(ep.epFilePath))
+                                                    {
+                                                        <div class="card-subtitle"><i class="bi bi-check-circle-fill"></i> Include download link: @ep.epFilePath</div>
+                                                    }
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Action ปุ่ม -->
+                            <div class="card-action" onclick="event.stopPropagation()">
+                                <a asp-controller="cVideoEP" asp-action="Edit" asp-route-id="@ep.vdoID" class="btn btn-yellow-icon" aria-label="button"><i class="bi bi-pencil"></i></a>
+                                <a class="btn btn-pink-icon btn-delete-ep-modal"
+                                   data-delete-url="@Url.Action("Delete", "cVideoEP", new { id = ep.vdoID })"
+                                   data-ep-id="@ep.vdoID"
+                                   data-ep-name="@ep.vdoName"
+                                   data-lesson-id="@ep.lessonID" href="#">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </a>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">No episodes available yet.</p>
+            }
+        </div>
+    </div>
+</div>
+
+
+
+<div class="box-body" style="margin-top: 20px;">
+
+    @if (Model.Test == null)
+    {
+        <div class="section-header">
+            <p>No test available yet.</p>
+            <form asp-controller="cTest" asp-action="Create" method="post">
+                <input type="hidden" name="lessonID" value="@Model.lessonID" />
+                <button type="submit" class="btn btn-black">+ Create Test</button>
+            </form>
+        </div>
+    }
+    else
+    {
+        <div>
+            <table style="width: 100%;">
+                <tr>
+                    <td style="text-align: left;"><p><strong>Test ID:</strong> @Model.Test.testID</p></td>
+                    <td style="text-align: right;"><p><strong>Total Questions:</strong> @(Model.Test.Questions?.Count() ?? 0)</p></td>
+                </tr>
+            </table>
+
+
+        </div>
+
+
+        <div class="episode-container collapsible">
+            <button class="btn-collapse" type="button" onclick="toggleCollapse(this)">
+                <h4>Questions</h4> <i class="bi bi-caret-down arrow"></i>
+            </button>
+
+            <div class="collapse-content">
+                <div class="section-header">
+                    <h5 class="section-title" style="margin:15px 0;">All Questions</h5>
+                    <a asp-controller="cQuestion" asp-action="Create" asp-route-testID="@Model.Test.testID" class="btn btn-black" aria-label="button">+ Add Question</a>
+                </div>
+
+                <!-- Question Content List -->
+                @if (Model.Test.Questions != null && Model.Test.Questions.Any())
+                {
+                    <div class="course-container">
+                        @foreach (var q in Model.Test.Questions)
+                        {
+                            <div class="card-course border-top">
+                                <div class="card-table">
+                                    <table>
+                                        <colgroup>
+                                            <col style="width:70px">
+                                            <col style="width:auto">
+                                            <col style="width:120px">
+                                        </colgroup>
+                                        <tr>
+                                            <td class="card-col1">
+                                                @if (!string.IsNullOrEmpty(q.questionPhotoPath))
+                                                {
+                                                    <img src="@q.questionPhotoPath" alt="Question Image" class="question-photo" />
+                                                }
+                                                else
+                                                {
+                                                    <div class="photo-placeholder">
+                                                        <span>No Image</span>
+                                                    </div>
+                                                }
+                                            </td>
+                                            <td class="card-col2">
+                                                <div class="card-title">@q.questionText</div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td class="card-col2">
+                                                @if (!string.IsNullOrEmpty(q.choiceA))
+                                                {
+                                                    <div class="card-question @(q.correctAnswer == "A" ? "bg-true text-white" : "bg-false text-dark border")">
+                                                        @q.choiceA
+                                                    </div>
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td class="card-col2">
+                                                @if (!string.IsNullOrEmpty(q.choiceB))
+                                                {
+                                                    <div class="card-question @(q.correctAnswer == "B" ? "bg-true text-white" : "bg-false text-dark border")">
+                                                        @q.choiceB
+                                                    </div>
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td class="card-col2">
+                                                @if (!string.IsNullOrEmpty(q.choiceC))
+                                                {
+                                                    <div class="card-question @(q.correctAnswer == "C" ? "bg-true text-white" : "bg-false text-dark border")">
+                                                        @q.choiceC
+                                                    </div>
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td class="card-col2">
+                                                @if (!string.IsNullOrEmpty(q.choiceD))
+                                                {
+                                                    <div class="card-question @(q.correctAnswer == "D" ? "bg-true text-white" : "bg-false text-dark border")">
+                                                        @q.choiceD
+                                                    </div>
+                                                }
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                            </div>
+
+                            <!-- Action ปุ่ม -->
+                            <div class="card-action" onclick="event.stopPropagation()">
+                                <a asp-controller="cQuestion" asp-action="Edit" asp-route-id="@q.questionID" class="btn btn-yellow-icon" aria-label="button"><i class="bi bi-pencil"></i></a>
+                                <a class="btn btn-pink-icon btn-delete-question-modal"
+                                   data-delete-url="@Url.Action("Delete", "cQuestion", new { id = q.questionID })"
+                                   data-q-id="@q.questionID"
+                                   data-q-name="@q.questionText"
+                                   data-test-id="@q.testID"
+                                   data-lesson-id="@Model.Test.lessonID"
+                                   href="#">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+</div>
+
+
+
+<div class="modal fade" id="deleteLessonConfirmModal" tabindex="-1" aria-labelledby="deleteLessonConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteLessonConfirmModalLabel"><i class="bi bi-exclamation-triangle-fill me-2"></i> Confirm Lesson Deletion</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body text-start">
+                <p class="mb-2"><strong>Are you sure you want to delete this Lesson?</strong></p>
+                <p class="mb-1">All associated data will also be removed:</p>
+
+                <ul class="list-unstyled ms-3">
+                    <li><i class="bi bi-x-circle-fill text-danger me-2"></i> Episodes</li>
+                    <li><i class="bi bi-x-circle-fill text-danger me-2"></i> Tests</li>
+                    <li><i class="bi bi-x-circle-fill text-danger me-2"></i> Related Data</li>
+                </ul>
+
+                <p class="mt-3 mb-3"><strong>This action cannot be undone.</strong></p>
+
+                <p class="text-muted small">
+                    ID: <strong id="lessonIdToDelete" class="text-danger"></strong> | Lesson: <strong id="lessonNameToDelete" class="text-danger"></strong>
+                </p>
+            </div>
+
+            <div class="modal-footer">
+                <a id="confirmLessonDeleteButton" class="btn btn-danger" aria-label="button">
+                    Delete Lesson
+                </a>
+
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="button">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteEpConfirmModal" tabindex="-1" aria-labelledby="deleteEpConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteEpConfirmModalLabel"><i class="bi bi-exclamation-triangle-fill me-2"></i> Confirm Episode Deletion</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+
+
+            <div class="modal-body text-start">
+                <p class="mb-2"><strong>Are you sure you want to delete this episode?</strong></p>
+                <p class="mb-1">All associated data will also be removed:</p>
+                <ul class="list-unstyled ms-3">
+                    <li><i class="bi bi-x-circle-fill text-danger me-2"></i> Video</li>
+                    <li><i class="bi bi-x-circle-fill text-danger me-2"></i> File Download</li>
+                    <li><i class="bi bi-x-circle-fill text-danger me-2"></i> Related Data</li>
+                </ul>
+                <p class="mt-3 mb-3"><strong>This action cannot be undone.</strong></p>
+
+                <p class="text-muted small">
+                    ID: <strong id="epIdToDelete" class="text-danger"></strong> | Episode: <strong id="epNameToDelete" class="text-danger"></strong>
+                </p>
+            </div>
+
+
+
+            <div class="modal-footer">
+                <a id="confirmEpDeleteButton" class="btn btn-danger">
+                    Delete Episode
+                </a>
+
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteQuestionConfirmModal" tabindex="-1" aria-labelledby="deleteQuestionConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteQuestionConfirmModalLabel"><i class="bi bi-exclamation-triangle-fill me-2"></i> ยืนยันการลบคำถาม</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+
+
+            <div class="modal-body text-start">
+                <p class="mb-2"><strong>Are you sure you want to delete this question? This action cannot be undone.</strong></p>
+
+                <p class="text-muted small">
+                    ID: <strong id="qIdToDelete" class="text-danger"></strong> | Question: <strong id="qNameToDelete" class="text-danger"></strong>
+                </p>
+            </div>
+
+
+
+            <div class="modal-footer">
+                <button type="button" id="confirmQuestionDeleteButton" class="btn btn-danger">
+                    Delete Question
+                </button>
+
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            const antiForgeryToken = $('input[name="__RequestVerificationToken"]').val();
+
+            // -----------------------------------------------------------
+            // 1. LESSON (Parent: Course)
+            // -----------------------------------------------------------
+            var deleteLessonModal = new bootstrap.Modal(document.getElementById('deleteLessonConfirmModal'));
+            var currentLessonDeleteUrl = '';
+            var redirectCourseId = 0;
+
+            $('.btn-delete-lesson-modal').on('click', function (e) {
+                e.preventDefault();
+                currentLessonDeleteUrl = $(this).data('delete-url');
+                var lessonId = $(this).data('lesson-id');
+                var lessonName = $(this).data('lesson-name');
+                redirectCourseId = $(this).data('course-id');
+
+                $('#lessonIdToDelete').text(lessonId);
+                $('#lessonNameToDelete').text(lessonName);
+                deleteLessonModal.show();
+            });
+
+            $('#confirmLessonDeleteButton').on('click', function () {
+                if (!currentLessonDeleteUrl) return;
+                deleteLessonModal.hide();
+
+                $.ajax({
+                    url: currentLessonDeleteUrl,
+                    type: 'POST',
+                    headers: { 'RequestVerificationToken': antiForgeryToken },
+                    success: function (response) {
+                        if (redirectCourseId && redirectCourseId > 0) {
+                            window.location.href = '/cCourse/Details/' + redirectCourseId;
+                        } else {
+                            alert("Lesson deleted successfully, but cannot redirect to parent Course.");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Error: The deletion failed. Please ensure the Lesson still has a valid parent Course ID.");
+                        console.error("Deletion failed:", error);
+                    }
+                });
+            });
+
+
+            // -----------------------------------------------------------
+            // 2. EPISODE (Parent: Lesson)
+            // -----------------------------------------------------------
+            var deleteEpModal = new bootstrap.Modal(document.getElementById('deleteEpConfirmModal'));
+            var currentEpDeleteUrl = '';
+            var redirectLessonIdEp = 0;
+
+            $('.btn-delete-ep-modal').on('click', function (e) {
+                e.preventDefault();
+
+                currentEpDeleteUrl = $(this).data('delete-url');
+                var epId = $(this).data('ep-id');
+                var epName = $(this).data('ep-name');
+                redirectLessonIdEp = $(this).data('lesson-id');
+
+                $('#epIdToDelete').text(epId);
+                $('#epNameToDelete').text(epName);
+
+                deleteEpModal.show();
+            });
+
+            $('#confirmEpDeleteButton').on('click', function () {
+                if (!currentEpDeleteUrl) return;
+
+                deleteEpModal.hide();
+
+                $.ajax({
+                    url: currentEpDeleteUrl,
+                    type: 'POST',
+                    headers: { 'RequestVerificationToken': antiForgeryToken },
+                    success: function (response) {
+                        if (redirectLessonIdEp > 0) {
+                            window.location.href = '/cLesson/Details/' + redirectLessonIdEp;
+                        } else {
+                            window.location.reload();
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Error: Deletion failed. Please contact support.");
+                        console.error("Deletion failed:", error);
+                    }
+                });
+            });
+
+
+            // -----------------------------------------------------------
+            // 3. TEST (Parent: Lesson)
+            // -----------------------------------------------------------
+        var deleteQuestionModal = new bootstrap.Modal(document.getElementById('deleteQuestionConfirmModal'));
+        var currentQuestionDeleteUrl = '';
+        var redirectLessonIdQuestion = 0;
+
+        $('.btn-delete-question-modal').on('click', function (e) {
+            e.preventDefault();
+
+            currentQuestionDeleteUrl = $(this).data('delete-url');
+            var qId = $(this).data('q-id');
+            var qName = $(this).data('q-name');
+
+            redirectLessonIdQuestion = $(this).data('lesson-id');
+
+            $('#qIdToDelete').text(qId);
+            $('#qNameToDelete').text(qName);
+
+            deleteQuestionModal.show();
+        });
+
+        $('#confirmQuestionDeleteButton').on('click', function () {
+            if (!currentQuestionDeleteUrl) return;
+
+            deleteQuestionModal.hide();
+
+
+                $.ajax({
+                    url: currentQuestionDeleteUrl,
+                    type: 'POST',
+                    headers: { 'RequestVerificationToken': antiForgeryToken },
+                    success: function (response) {
+                        if (redirectLessonIdTest > 0) {
+                            window.location.href = '/cLesson/Details/' + response.lessonId;
+                        } else {
+                            window.location.reload();
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Error: The deletion failed. Please contact support.");
+                        console.error("Deletion failed:", error);
+                    }
+                });
+            });
+
+        });
+    </script>
+}
+
+
+
+
+
+
+
+

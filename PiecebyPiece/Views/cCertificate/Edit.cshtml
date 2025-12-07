@@ -1,0 +1,73 @@
+﻿@model PiecebyPiece.Models.mCERTIFICATE
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+<center><span class="header-title">Edit Certificate</span></center>
+
+
+<div class="row">
+    <form asp-action="Edit">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="cerID" />
+        <div class="box-body-sm">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="userName" class="control-label">First Name</label>
+                        <input asp-for="userName" class="form-control" />
+                        <span asp-validation-for="userName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="userSurname" class="control-label">Surname</label>
+                        <input asp-for="userSurname" class="form-control" />
+                        <span asp-validation-for="userSurname" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label asp-for="courseName" class="control-label">Course Name</label>
+                        <input asp-for="courseName" class="form-control" />
+                        <span asp-validation-for="courseName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="cerDate" class="control-label">Date</label>
+                        <input asp-for="cerDate" class="form-control" />
+                        <span asp-validation-for="cerDate" class="text-danger"></span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-md-6 mb-2">
+                <a asp-action="Index" class="btn-cancel" aria-label="button">Cancle</a>
+            </div>
+            <div class="col-md-6">
+                <input type="submit" value="Save" class="btn-save" aria-label="button" />
+            </div>
+        </div>
+
+    </form>
+
+</div>
+
+
+
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,65 @@
+﻿@{
+    ViewData["Title"] = "Test Result";
+    Layout = "~/Views/Shared/_Layout_Navbar.cshtml";
+}
+
+<div class="container text-center mt-5">
+
+    @if (ViewBag.Result == "You Pass")
+    {
+        <div class="box-body mb-4" style="padding:50px;">
+            <img src="~/images/check.jpg" alt="Congratulations"
+                 style="width:150px; height:150px; border-radius:50%; object-fit:cover; display:block; margin:0 auto 20px;" />
+            <h1 style="color: green;">🎉 CONGRATULATIONS! 🎉</h1>
+            <h5>You pass the test!</h5>
+            <br />
+            <h3>Your Score: @ViewBag.ScorePercent%</h3>
+        </div>
+
+        <div>
+            <a asp-controller="cUserPersp" asp-action="MyCourse"
+               class="btn btn-yellow">
+                My Course
+            </a>
+
+            @if (ViewBag.NextLessonID != null)
+            {
+                <!-- 👉 ยังมี lesson ถัดไป -->
+                <a asp-controller="cUserPersp" asp-action="LearnLesson"
+                   asp-route-lessonID="@ViewBag.NextLessonID" class="btn btn-black">
+                    Go to next Lesson
+                </a>
+            }
+            else
+            {
+                <!-- 👉 นี่คือ lesson สุดท้าย แสดงปุ่มดาวน์โหลด certificate -->
+                <a asp-controller="cCertificate" asp-action="UserCertificateList"
+                   asp-route-id="@ViewBag.CertificateID" class="btn btn-black">
+                    Download Certificate
+                </a>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="box-body mb-4" style="padding:50px;">
+            <img src="~/images/cross.jpg" alt="Failed"
+                 style="width:150px; height:150px; border-radius:50%; object-fit:cover; display:block; margin:0 auto 20px;" />
+            <h1 style="color: red;">❌ You Failed ❌</h1>
+            <h5>You didn't pass the test...</h5>
+            <br />
+            <h3>Your Score: @ViewBag.ScorePercent%</h3>
+        </div>
+
+        <div>
+            <a asp-controller="cUserPersp" asp-action="MyCourse"
+               class="btn btn-yellow">
+                My Course
+            </a>
+            <a asp-controller="cUserPersp" asp-action="TestStart" asp-route-testID="@ViewBag.TestID"
+               class="btn btn-black">
+                Test Again
+            </a>
+        </div>
+    }
+</div>

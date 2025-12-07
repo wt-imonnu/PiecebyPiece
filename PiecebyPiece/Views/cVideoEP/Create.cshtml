@@ -1,0 +1,61 @@
+﻿@model PiecebyPiece.Models.mVideoEP
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+
+
+<center><span class="header-title">Create Episode</span></center>
+
+<div class="row">
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="lessonID" />
+        <div class="box-body-sm">
+            <div class="row">
+                @if (ViewData["LessonName"] != null)
+                {
+                    <div class="form-group">
+                        <label class="form-label">Create episode in lesson</label>
+                        <input type="text" class="form-control" value="@ViewData["LessonName"]" readonly />
+                    </div>
+                }
+            </div>
+            <hr />
+
+            <div class="row">
+                <div class="form-group">
+                    <label asp-for="vdoName" class="control-label">Episode Name</label>
+                    <input asp-for="vdoName" class="form-control" />
+                    <span asp-validation-for="vdoName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="vdoFilePath" class="control-label">Youtube Embed Link</label>
+                    <input asp-for="vdoFilePath" class="form-control" />
+                    <span asp-validation-for="vdoFilePath" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="epFilePath" class="control-label">File Download Link</label>
+                    <input asp-for="epFilePath" class="form-control" />
+                    <span asp-validation-for="epFilePath" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-md-6 mb-2">
+                <a asp-controller="cLesson"
+                   asp-action="Details"
+                   asp-route-id="@Model?.lessonID"
+                   class="btn-cancel" aria-label="button">Cancle</a>
+            </div>
+            <div class="col-md-6">
+                <input type="submit" value="Save" class="btn-save" aria-label="button" />
+            </div>
+        </div>
+    </form>
+</div>

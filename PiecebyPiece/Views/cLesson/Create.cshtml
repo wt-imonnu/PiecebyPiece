@@ -1,0 +1,51 @@
+﻿@model PiecebyPiece.Models.mLESSON
+
+@{
+    ViewData["Title"] = "Create Lesson";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+
+
+<center><span class="header-title">Create Lesson</span></center>
+
+<div class="row">
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="courseID" />
+        <div class="box-body-sm">
+            <div class="row">
+                @if (ViewData["CourseName"] != null)
+                {
+                    <div class="form-group">
+                        <label class="form-label">Create lesson in course</label>
+                        <input type="text" class="form-control" value="@ViewData["CourseName"]" readonly />
+                    </div>
+                }
+            </div>
+            <hr />
+
+            <div class="row">
+                <div class="form-group">
+                    <label asp-for="lessonName" class="form-label">Lesson Name</label>
+                    <input asp-for="lessonName" class="form-control" />
+                    <span asp-validation-for="lessonName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="lessonDescription" class="form-label">Description</label>
+                    <textarea asp-for="lessonDescription" class="form-control"></textarea>
+                    <span asp-validation-for="lessonDescription" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-md-6 mb-2">
+                <a asp-controller="cCourse" asp-action="Index" class="btn-cancel" aria-label="button">Cancle</a>
+            </div>
+            <div class="col-md-6">
+                <input type="submit" value="Save" class="btn-save" aria-label="button" />
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,146 @@
+﻿@model PiecebyPiece.Models.mQUESTION
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+
+<center><span class="header-title">Create Question</span></center>
+
+
+
+<div class="row">
+    <form asp-action="Edit" enctype="multipart/form-data" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="testID" />
+        <input type="hidden" asp-for="questionID" />
+        <div class="box-body-sm">
+            <div class="row">
+                @if (ViewData["LessonName"] is string lessonName)
+                {
+                    <div class="form-group">
+                        <label class="control-label">Create question in lesson's test</label>
+                        <input type="text" class="form-control" value="@lessonName" readonly />
+                        <input type="hidden" name="LessonID" value="@ViewData["LessonID"]" />
+                    </div>
+                }
+            </div>
+            <hr />
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="questionText" class="control-label">Question Title</label>
+                        <textarea asp-for="questionText" class="form-control" rows="5"></textarea>
+                        <span asp-validation-for="questionText" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <center>
+                            @if (Model.questionPhotoPath != null)
+                            {
+                                <div class="mt-3">
+                                    <p class="control-label">Preview Question Image</p>
+                                    <img src="@Model.questionPhotoPath" alt="Current Question Image" style="max-width: 20vh; border-radius: 8px;" />
+                                </div>
+                            }
+                        </center>
+                        <label asp-for="questionPhoto" class="control-label">Upload new question image</label>
+                        <input asp-for="questionPhoto" type="file" class="form-control" />
+                        <span asp-validation-for="questionPhoto" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="choiceA" class="control-label">Choice A</label>
+                        <input asp-for="choiceA" class="form-control" />
+                        <span asp-validation-for="choiceA" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="choiceB" class="control-label">Choice B</label>
+                        <input asp-for="choiceB" class="form-control" />
+                        <span asp-validation-for="choiceB" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="choiceC" class="control-label">Choice C</label>
+                        <input asp-for="choiceC" class="form-control" id="choiceCInput" />
+                        <span asp-validation-for="choiceC" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="choiceD" class="control-label">Choice D</label>
+                        <input asp-for="choiceD" class="form-control" id="choiceDInput" />
+                        <span asp-validation-for="choiceD" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="correctAnswer" class="control-label">Correct Answer</label>
+                        <select asp-for="correctAnswer" class="form-control" id="correctAnswerSelect">
+                            <option value="">-- Select Answer --</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C" id="optionC">C</option>
+                            <option value="D" id="optionD">D</option>
+                        </select>
+                        <span asp-validation-for="correctAnswer" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-md-6 mb-2">
+                <a asp-controller="cLesson"
+                   asp-action="Details"
+                   asp-route-id="@ViewData["LessonID"]"
+                   class="btn-cancel" aria-label="button">Cancle</a>
+            </div>
+            <div class="col-md-6">
+                <input type="submit" value="Save" class="btn-save" aria-label="button" />
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            const $choiceCInput = $('#choiceCInput');
+            const $choiceDInput = $('#choiceDInput');
+            const $optionC = $('#optionC');
+            const $optionD = $('#optionD');
+            const $correctAnswerSelect = $('#correctAnswerSelect');
+
+            function updateCorrectAnswerOptions() {
+                if ($choiceCInput.val().trim() === '') {
+                    $optionC.prop('disabled', true);
+                    if ($correctAnswerSelect.val() === 'C') {
+                        $correctAnswerSelect.val('');
+                    }
+                } else {
+                    $optionC.prop('disabled', false);
+                }
+
+                if ($choiceDInput.val().trim() === '') {
+                    $optionD.prop('disabled', true);
+                    if ($correctAnswerSelect.val() === 'D') {
+                        $correctAnswerSelect.val('');
+                    }
+                } else {
+                    $optionD.prop('disabled', false);
+                }
+            }
+
+            updateCorrectAnswerOptions();
+
+            $choiceCInput.on('input', updateCorrectAnswerOptions);
+            $choiceDInput.on('input', updateCorrectAnswerOptions);
+        });
+    </script>
+}

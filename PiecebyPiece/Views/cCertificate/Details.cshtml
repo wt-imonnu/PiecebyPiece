@@ -1,0 +1,183 @@
+﻿@model PiecebyPiece.Models.mCERTIFICATE
+@using System.Globalization;
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+<center><span class="header-title">Certificate Details</span></center>
+
+<div class="box-body">
+    <!-- Action Bar -->
+    <div class="action-bar">
+        <div class="left-actions">
+            <a asp-controller="cCertificate" asp-action="Index" asp-route-id="@Model?.cerID" class="btn btn-mint-icon" aria-label="button"><i class="bi bi-arrow-left"></i></a>
+            <a asp-controller="cCertificate" asp-action="Edit" asp-route-id="@Model?.cerID" class="btn btn-yellow-icon" aria-label="button"><i class="bi bi-pencil"></i></a>
+        </div>
+
+        <div class="right-actions">
+            <a asp-controller="cCertificate" asp-action="Delete" asp-route-id="@Model?.cerID" class="btn btn-pink-icon" aria-label="button"><i class="bi bi-trash"></i></a>
+        </div>
+    </div>
+
+
+
+    <!-- Certificate Infomation -->
+    <hr />
+    <center>
+        <div class="card-id">#@Html.DisplayFor(model => model.cerID) | Enroll ID: #@Html.DisplayFor(model => model.Enrollment.enrollID)</div>
+    </center>
+    <dl class="row">
+        <dt class="col-sm-2">
+            Fullname
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.userName) @Html.DisplayFor(model => model.userSurname)
+        </dd>
+        <dt class="col-sm-2">
+            Course
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.courseName)
+        </dd>
+        <dt class="col-sm-2">
+            Date
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.cerDate)
+        </dd>
+    </dl>
+</div>
+
+
+
+
+@{
+    CultureInfo enCulture = new CultureInfo("en-US");
+    string fullName = $"{Model.userName} {Model.userSurname}";
+    string formattedDate = Model.cerDate.ToString("MMMM dd, yyyy", enCulture);
+}
+
+
+
+<style>
+    .certificate-container {
+        width: 100%;
+        height: auto;
+        margin: auto;
+        background-color: white;
+        position: center;
+        text-align: center;
+        color: #000;
+        overflow: hidden;
+        border-radius: 50px;
+        border: none;
+        padding: 30px 50px;
+    }
+
+    /* --------------------- TEXT STYLES (แก้ปัญหาตัดบรรทัด) --------------------- */
+
+    .section-name {
+        font-size: 1.5vw;
+        font-weight: bold;
+        margin: 5px 0 20px 0;
+        display: block;
+        border-bottom: 2px solid #000;
+        padding-bottom: 5px;
+        color: #000;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: normal;
+        max-width: 100%;
+    }
+
+    .section-course {
+        font-size: 1.5vw;
+        font-weight: bold;
+        margin: 5px 0 20px 0;
+        color: #000;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: normal;
+        max-width: 100%;
+    }
+
+    /* --------------------- STYLES อื่นๆ (เดิม) --------------------- */
+    .section-title-completion {
+        font-size: 2vw;
+        font-weight: 900;
+        margin: 0 0 20px 0;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+    }
+
+    .section-intro-text {
+        font-size: 0.8vw;
+        font-weight: normal;
+        margin-bottom: 5px;
+        color: #000;
+        text-transform: uppercase;
+    }
+
+    .section-meta-footer {
+        margin-top: 20px;
+        font-size: 0.8vw;
+        color: #333;
+        line-height: 1.5;
+    }
+
+    .meta-detail {
+        display: block;
+        margin-top: 5px;
+    }
+
+    .platform-name {
+        margin-top: 20px;
+        font-size: 1vw;
+        font-weight: bold;
+    }
+
+    .platform-subtext {
+        margin-bottom: 5px;
+        font-size: 0.8vw;
+        color: #666;
+    }
+</style>
+
+<center>
+    <div class="section-header">
+        <h5 class="section-title" style="margin: 20px 0 10px 65px;">Certificate Preview:</h5>
+    </div>
+
+    <div class="certificate-container">
+
+        <div class="section-intro-text">CERTIFICATE OF</div>
+        <div class="section-title-completion">COMPLETION</div>
+
+        <div class="section-intro-text">THIS CERTIFICATE IS PROUDLY PRESENTED TO</div>
+
+        <div class="section-name">
+            @fullName
+        </div>
+
+        <div class="section-intro-text">HAS SUCCESSFULLY COMPLETED THE ONLINE COURSE:</div>
+
+        <div class="section-course">
+            @Model.courseName
+        </div>
+
+        <div class="section-meta-footer">
+            <div class="meta-detail">
+                issue on <span style="font-weight: bold;">@formattedDate</span>
+            </div>
+            <div class="meta-detail">
+                Certificate ID: <span style="font-weight: bold;">@Model.cerID</span>
+            </div>
+
+            <div class="platform-name">Piece by Piece</div>
+            <div class="platform-subtext">Online Learning Platform</div>
+        </div>
+
+    </div>
+</center>

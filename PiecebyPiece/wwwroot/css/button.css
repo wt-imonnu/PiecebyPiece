@@ -1,0 +1,235 @@
+﻿/*-------- BUTTON --------*/
+
+.btn-yellow {
+    background-color: #FEC63D;
+    color: #000;
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    border: none;
+    border-radius: 100px;
+    padding: 5px 30px;
+    transition: background-color 0.2s ease;
+    white-space: nowrap;
+    display: inline-block;
+    min-width: max-content;
+}
+
+    .btn-yellow:hover {
+        background-color: #FF6F59;
+        color: #000;
+    }
+
+.btn-black {
+    background-color: #000;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    font-weight: 500;
+    border: none;
+    border-radius: 100px;
+    padding: 5px 30px;
+    transition: background-color 0.2s ease;
+    white-space: nowrap;
+    display: inline-block;
+    min-width: max-content;
+    text-decoration: none !important;
+}
+
+    .btn-black:hover {
+        background-color: #49454F !important;
+        color: #fff;
+    }
+
+    .btn-black:hover,
+    .btn-black:focus,
+    .btn-black:active {
+        text-decoration: none !important;
+    }
+
+
+
+
+.btn-filter {
+    color: #49454F;
+    border: 1px solid #49454F;
+    border-radius: 10px;
+    padding: 5px;
+    transition: background-color 0.1s ease, color 0.1s ease;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+    .btn-filter:hover, .btn-filter:active, .btn-filter.active {
+        background-color: #49454F;
+        color: #D9D9DD;
+    }
+
+
+
+.btn-yellow-icon {
+    background-color: #FEC63D;
+    color: #000;
+    border: none;
+    border-radius: 20px;
+}
+
+    .btn-yellow-icon:hover {
+        background-color: #EBAA00;
+    }
+
+.btn-black-icon {
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+}
+
+    .btn-black-icon:hover {
+        background-color: #49454F;
+    }
+
+.btn-pink-icon {
+    background-color: #FF6F59;
+    color: #000;
+    border: none;
+    border-radius: 20px;
+}
+
+    .btn-pink-icon:hover {
+        background-color: #E56450;
+    }
+
+.btn-mint-icon {
+    background-color: #5AB2A6;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+}
+
+    .btn-mint-icon:hover {
+        background-color: #438E84;
+        color: #fff;
+    }
+
+.btn-logout {
+    display: block;
+    text-align: end;
+    color: #000000;
+    font-weight: 700;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+}
+
+    .btn-logout:hover {
+        color: #FF6F59;
+    }
+
+.btn-collapse {
+    width: 100%;
+    background: #fff;
+    border-width:1px;
+    border-radius: 9px;
+    padding: 15px 20px;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2em;
+}
+
+.btn-cancel {
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 100px;
+    padding: 5px 30px;
+    white-space: nowrap;
+    display: block;
+    width: 100%;
+    text-align: center;
+    min-width: max-content;
+    background-color: #6EB8AE;
+    border: 1.5px solid #fff;
+    text-decoration: none;
+    color: #fff;
+}
+
+    .btn-cancel:hover {
+        background-color: #fff;
+        border: 1.5px solid #fff;
+        color: #6EB8AE;
+    }
+
+.btn-save {
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 100px;
+    padding: 5px 30px;
+    white-space: nowrap;
+    display: block;
+    width: 100%;
+    text-align: center;
+    min-width: max-content;
+    background-color: #FF6F59;
+    color: #fff;
+    border: none;
+}
+
+    .btn-save:hover {
+        background-color: #E56450;
+    }
+
+
+
+
+.arrow {
+    display: inline-block;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 1;
+}
+
+.collapsed .arrow {
+    transform: rotateX(180deg);
+    opacity: 0.7;
+}
+
+.collapse-content {
+    animation: fadeIn 0.5s ease;
+}
+
+.collapsed .collapse-content {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+
+
+button:focus, button:active, .btn:focus, .btn:active {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+
+.nav-custom-link {
+    color: #212529 !important;
+    display: block;
+    text-decoration: none;
+    transition: background-color 0.15s ease-in-out;
+}
+
+    .nav-custom-link:hover {
+        background-color: #f8f9fa;
+        color: #212529 !important;
+    }

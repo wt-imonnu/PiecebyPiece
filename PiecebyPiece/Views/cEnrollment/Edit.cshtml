@@ -1,0 +1,52 @@
+﻿@model PiecebyPiece.Models.mENROLLMENT
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+<center><span class="header-title">Enroll</span></center>
+
+@if (ViewBag.EnrollError != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Warning!</strong> @ViewBag.EnrollError
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" aria-label="button"></button>
+    </div>
+}
+
+<div class="row">
+    <form asp-action="Edit">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="enrollID" />
+        <div class="box-body-sm">
+            <div class="row">
+                <div class="form-group">
+                    <label asp-for="userID" class="control-label">Select user to enroll</label>
+                    <select asp-for="userID" class="form-control" asp-items="ViewBag.userID"></select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="courseID" class="control-label">Select course to enroll</label>
+                    <select asp-for="courseID" class="form-control" asp-items="ViewBag.courseID"></select>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-md-6 mb-2">
+                <a asp-action="Index" class="btn-cancel" aria-label="button">Cancle</a>
+            </div>
+            <div class="col-md-6">
+                <input type="submit" value="Save" class="btn-save" aria-label="button" />
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+
+

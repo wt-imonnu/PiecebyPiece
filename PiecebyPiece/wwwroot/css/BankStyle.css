@@ -1,0 +1,64 @@
+﻿
+/* ================= Login ================= */
+
+.col-login {
+    width: 50%;
+    margin: auto;
+    padding: 50px;
+    margin-top: 6px;
+    text-align: center; /* ให้รูปอยู่ตรงกลาง */
+}
+
+    .col-login img {
+        width: 80%; /* หรือจะใช้ 100% ก็ได้ */
+        max-width: 300px; /* จำกัดขนาดสูงสุด */
+        height: auto;
+        border-radius: 50%;
+        object-fit: cover; /* ช่วยให้รูปไม่บี้ */
+    }
+
+/* ================= MyCourse ================= */
+
+.btn-disabled {
+    background-color: #e5e5e5 !important; /* ใช้ !important เพื่อ override */
+    color: #b3b3b3; /* กำหนดสีตัวอักษร */
+    font-size: 1.2rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 100px;
+    padding: 5px 30px;
+    transition: background-color 0.2s ease;
+    white-space: nowrap;
+    display: inline-block;
+    min-width: max-content;
+    cursor: not-allowed; /* เปลี่ยน cursor */
+}
+
+
+/* ================= MyCourse ================= */
+#myCourseCarousel {
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+    #myCourseCarousel h1 {
+        font-size: 2.5rem;
+        color: #333;
+    }
+
+    #myCourseCarousel p {
+        color: #555;
+        line-height: 1.6;
+    }
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    filter: invert(1);
+    opacity: 0.9;
+    transition: 0.3s;
+}
+
+    .carousel-control-prev-icon:hover,
+    .carousel-control-next-icon:hover {
+        opacity: 1;
+    }

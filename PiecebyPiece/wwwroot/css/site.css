@@ -1,0 +1,81 @@
+﻿html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+    background-color: #5AB2A6;
+    font-family: 'Inter', sans-serif;
+}
+
+.box-body{
+    background-color: #fff ;
+    border-radius:50px;
+    border: none;
+    padding: 30px 50px;
+    overflow:hidden;
+}
+
+.box-body-sm{
+    background-color: #fff;
+    border-radius: 50px;
+    border: none;
+    padding: 50px 100px;
+    overflow: hidden;
+}
+
+
+/* ================= Header ================= */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+.header-title {
+    font-weight: 700;
+    font-size: 3rem;
+    color: #fff;
+    text-shadow: 1.8px 0 0 #49454F;
+}
+
+.section-title {
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: #000;
+}
+
+
+.action-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom:20px;
+}
+
+.left-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.right-action {
+    color: red;
+    text-decoration: none;
+}

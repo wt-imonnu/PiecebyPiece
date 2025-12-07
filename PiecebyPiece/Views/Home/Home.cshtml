@@ -1,0 +1,267 @@
+﻿@model IEnumerable<PiecebyPiece.Models.mCOURSE>
+
+@{
+    ViewData["Title"] = "Home";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<link rel="stylesheet" href="~/css/BankStyle.css" asp-append-version="true" />
+
+
+<div class="box-body">
+    <div class="home-container">
+        <div class="home-content">
+            <h1>Piece by Piece</h1>
+            <p>Welcome to freespace for learning area.</p>
+            <br />
+            <form asp-controller="Home" asp-action="SignUp" method="get" class="d-inline">
+                <button type="submit" class="btn-yellow"> Sign Up <i class="bi bi-arrow-right"></i> </button>
+            </form>
+
+            <form asp-controller="Home" asp-action="AboutUs" method="get" class="d-inline">
+                <button type="submit" class="btn-black"> Learn more <i class="bi bi-arrow-right"></i> </button>
+            </form>
+        </div>
+
+        <img src="~/images/pic5.jpg" alt="Background Image">
+    </div>
+
+
+
+    @{
+        ViewData["Title"] = "Courses";
+    }
+
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <style>
+        .courses {
+            background: #ffffff;
+            padding: 40px 60px;
+            border-radius: 20px;
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .courses-title {
+            text-align: center;
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .course-icons {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .course-slide-img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+
+
+        .icon-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .icon {
+            background: #f6c700;
+            padding: 18px;
+            font-size: 26px;
+            border-radius: 50%;
+        }
+
+        .course-block {
+            margin: 60px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .course-text h3 {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .swiper {
+            width: 100%;
+            height: 150px;
+        }
+
+        .swiper-slide {
+            background: #000;
+            border-radius: 15px;
+            height: 120px;
+        }
+
+        .lesson-arrow {
+            font-size: 32px;
+            color: #ff5733;
+            font-weight: bold;
+            text-align: right;
+            padding-top: 10px;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @@media(max - width: 768px) {
+            .courses {
+                padding: 30px 25px;
+            }
+        }
+    </style>
+
+
+    <section class="courses">
+        <br />
+        <h1 class="courses-title">Our Courses</h1>
+
+        <!-- ICONS -->
+        <div class="course-icons">
+            <div class="icon-item"><span class="icon">➗</span><a><p>Math</p></a></div>
+            <div class="icon-item"><span class="icon">⚛️</span><p>Physic</p></div>
+            <div class="icon-item"><span class="icon">💻</span><p>Programming</p></div>
+            <div class="icon-item"><span class="icon">🎛️</span><p>Production</p></div>
+            <div class="icon-item"><span class="icon">🎨</span><p>Art & Design</p></div>
+        </div>
+
+
+        <!-- 1️⃣ Mathematics -->
+        <div class="course-block">
+            <div class="course-text">
+                <h3>Mathematics</h3>
+            </div>
+
+            <div class="swiper swiper-math">
+                <div class="swiper-wrapper">
+                    @foreach (var course in Model.Where(c => c.courseSubject == "MTH"))
+                    {
+                        <div class="swiper-slide">
+                            <img src="@course.coursePhotoPath" class="course-slide-img" alt="Mathematics Course" />
+                            <div class="card-title">@course.courseSubject - @course.courseName</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="course-block">
+            <div class="course-text">
+                <h3>Physics</h3>
+            </div>
+
+            <div class="swiper swiper-physic">
+                <div class="swiper-wrapper">
+                    @foreach (var course in Model.Where(c => c.courseSubject == "PHY"))
+                    {
+                        <div class="swiper-slide">
+                            <img src="@course.coursePhotoPath" class="course-slide-img" alt="Physics Course" />
+                            <div class="card-title">@course.courseSubject - @course.courseName</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="course-block">
+            <div class="course-text">
+                <h3>Programming</h3>
+            </div>
+
+            <div class="swiper swiper-programming">
+                <div class="swiper-wrapper">
+                    @foreach (var course in Model.Where(c => c.courseSubject == "COD"))
+                    {
+                        <div class="swiper-slide">
+                            <img src="@course.coursePhotoPath" class="course-slide-img" alt="Programming Course" />
+                            <div class="card-title">@course.courseSubject - @course.courseName</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Production -->
+        <div class="course-block">
+            <div class="course-text">
+                <h3>Production</h3>
+            </div>
+
+            <div class="swiper swiper-production">
+                <div class="swiper-wrapper">
+                    @foreach (var course in Model.Where(c => c.courseSubject == "PROD"))
+                    {
+                        <div class="swiper-slide">
+                            <img src="@course.coursePhotoPath" class="course-slide-img" alt="Production Course" />
+                            <div class="card-title">@course.courseSubject - @course.courseName</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Art & Design -->
+        <div class="course-block">
+    <div class="course-text">
+        <h3>Art & Design</h3>
+    </div>
+
+            <div class="swiper swiper-art">
+        <div class="swiper-wrapper">
+            @foreach (var course in Model.Where(c => c.courseSubject == "ART"))
+            {
+                <div class="swiper-slide">
+                            <img src="@course.coursePhotoPath" class="course-slide-img" alt="Art&Design Course" />
+                            <div class="card-title">@course.courseSubject - @course.courseName</div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+
+    </section>
+
+
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script>
+        const swiperSettings = {
+            slidesPerView: 3,
+            spaceBetween: 20,
+            freeMode: true,
+            breakpoints: {
+                0: { slidesPerView: 1 },
+                480: { slidesPerView: 2 },
+                768: { slidesPerView: 3 }
+            }
+        };
+
+        new Swiper(".swiper-math", swiperSettings);
+        new Swiper(".swiper-physic", swiperSettings);
+        new Swiper(".swiper-programming", swiperSettings);
+        new Swiper(".swiper-production", swiperSettings);
+        new Swiper(".swiper-art", swiperSettings);
+    </script>
+
+
+
+
+</div>

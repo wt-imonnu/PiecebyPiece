@@ -1,0 +1,208 @@
+﻿@model PiecebyPiece.Models.mADMIN
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+
+<center><span class="header-title">Admin Details</span></center>
+
+
+<div class="box-body">
+    <!-- Action Bar -->
+    <div class="action-bar">
+        <div class="left-actions">
+            <a asp-action="Index" class="btn btn-mint-icon" aria-label="button"><i class="bi bi-arrow-left"></i></a>
+            <a asp-action="Edit" asp-route-id="@Model?.adminID" class="btn btn-yellow-icon" aria-label="button"><i class="bi bi-pencil"></i></a>
+        </div>
+
+        <div class="right-actions">
+            @{
+                int currentLoggedInAdminId = (ViewBag.CurrentAdminId != null)
+                ? Convert.ToInt32(ViewBag.CurrentAdminId) : 0;
+
+                bool isForbiddenToDelete = (Model?.adminID == 1) || (Model?.adminID == currentLoggedInAdminId);
+                string forbiddenReason = null;
+                if (Model?.adminID == 1)
+                {
+                    forbiddenReason = "Admin1";
+                }
+                else if (Model?.adminID == currentLoggedInAdminId)
+                {
+                    forbiddenReason = "Self";
+                }
+            }
+            @if (isForbiddenToDelete)
+            {
+                <a class="btn btn-pink-icon btn-forbidden-delete"
+                   aria-label="button"
+                   href="#"
+                   data-forbidden-reason="@forbiddenReason"
+                   title="You are not authorized to delete Admin ID: 1 or your own account.">
+                    <i class="bi bi-trash"></i>
+                </a>
+            }
+            else
+            {
+                <a class="btn btn-pink-icon btn-delete-modal"
+                   aria-label="button"
+                   data-delete-url="@Url.Action("Delete", "cAdminPanel", new { id = Model?.adminID })"
+                   data-user-id="@Model?.adminID"
+                   data-user-name="@Model?.adminName"
+                   data-user-surname="@Model?.adminSurname"
+                   href="#">
+                    <i class="bi bi-trash"></i>
+                </a>
+            }
+        </div>
+    </div>
+
+
+
+    <!-- Admin Infomation -->
+
+    <table class="info-table" style="margin-top:20px;">
+        <tr>
+            <th>ID</th>
+            <td>
+                @Html.DisplayFor(model => model.adminID)
+            </td>
+        </tr>
+        <tr>
+            <th>Fullname</th>
+            <td>
+                @Html.DisplayFor(model => model.adminName) @Html.DisplayFor(model => model.adminSurname)
+            </td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td>
+                @Html.DisplayFor(model => model.adminEmail)
+            </td>
+        </tr>
+        <tr>
+            <th>Password</th>
+            <td>
+                @Html.DisplayFor(model => model.adminPassword)
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteConfirmModalLabel"><i class="bi bi-exclamation-triangle-fill me-2"></i> Confirm Deletion</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+
+
+            <div class="modal-body text-start">
+                <p class="mb-2"><strong>Are you sure you want to delete this admin? This action cannot be undone.</strong></p>
+
+                <p class="text-muted small">
+                    ID: <strong id="userIdToDelete" class="text-danger"></strong> | User: <strong id="userNameToDelete" class="text-danger"></strong> <strong id="userSurnameToDelete" class="text-danger"></strong>
+                </p>
+
+                <form id="deleteForm" method="post" style="display: none;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="deleteUserIdInput" name="id" />
+                </form>
+
+            </div>
+
+
+
+            <div class="modal-footer">
+                <a id="confirmDeleteButton" class="btn btn-danger" aria-label="button">
+                    Delete Admin
+                </a>
+
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="button">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="errorAlertModal" tabindex="-1" aria-labelledby="errorAlertModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title" id="errorAlertModalLabel"><i class="bi bi-exclamation-octagon-fill me-2"></i> Error</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-start">
+                <p id="errorAlertMessage">
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" data-bs-dismiss="modal" aria-label="button">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            $('.btn-delete-modal').on('click', function (e) {
+                e.preventDefault();
+
+                var userId = $(this).data('user-id');
+                var userName = $(this).data('user-name');
+                var userSurname = $(this).data('user-surname');
+                var deleteUrl = $(this).data('delete-url');
+
+                $('#userIdToDelete').text(userId);
+                $('#userNameToDelete').text(userName);
+                $('#userSurnameToDelete').text(userSurname);
+
+                $('#deleteUserIdInput').val(userId);
+                $('#deleteForm').attr('action', deleteUrl);
+
+                var deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+                deleteModal.show();
+            });
+
+
+            $('#confirmDeleteButton').on('click', function () {
+                $('#deleteForm').submit();
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('.btn-forbidden-delete').on('click', function (e) {
+                e.preventDefault();
+
+                var reasonCode = $(this).data('forbidden-reason');
+                var message = "";
+
+
+                if (reasonCode === 'Admin1') {
+                    message = "<strong>Deletion failed:</strong> Cannot delete Admin ID: 1 (Primary Account).";
+                } else if (reasonCode === 'Self') {
+                    message = "<strong>Deletion failed:</strong> Cannot delete your own account.";
+                } else {
+                    message = "You are not authorized to perform this action.";
+                }
+
+                $('#errorAlertMessage').html(message);
+                var errorModal = new bootstrap.Modal(document.getElementById('errorAlertModal'));
+                errorModal.show();
+            });
+        });
+    </script>
+
+}

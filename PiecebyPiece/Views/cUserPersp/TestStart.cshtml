@@ -1,0 +1,83 @@
+﻿@model PiecebyPiece.Models.mTEST
+
+@{
+    Layout = "~/Views/Shared/_Layout_Navbar.cshtml";
+}
+
+<div class="box-body">
+    <div class="home-container mb-2">
+        <div class="home-content">
+            <h1>@Model.Lesson.Course.courseName</h1>
+            <p class="lesson-title">@Model.Lesson.lessonName</p>
+            <p class="lesson-description">
+                @Model.Lesson.lessonDescription
+            </p>
+        </div>
+
+        <img src="@Model.Lesson.Course.coursePhotoPath"
+             alt="Course Image" />
+    </div>
+
+    
+
+    <form asp-controller="cUserPersp" asp-action="Submit" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="testID" value="@Model.testID" />
+
+        @foreach (var q in Model.Questions)
+        {
+            <div class="card p-3 my-3 question-block">
+                <p><strong>@q.questionText</strong></p>
+
+                <input type="hidden" name="questionID" value="@q.questionID" />
+
+                <div>
+                    <label>
+                        <input type="radio"
+                               name="selectedAnswer[@q.questionID]"
+                               value="A" />
+                        @q.choiceA
+                    </label>
+                </div>
+
+                <div>
+                    <label>
+                        <input type="radio"
+                               name="selectedAnswer[@q.questionID]"
+                               value="B" />
+                        @q.choiceB
+                    </label>
+                </div>
+
+                @if (!string.IsNullOrEmpty(q.choiceC))
+                {
+                    <div>
+                        <label>
+                            <input type="radio"
+                                   name="selectedAnswer[@q.questionID]"
+                                   value="C" />
+                            @q.choiceC
+                        </label>
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(q.choiceD))
+                {
+                    <div>
+                        <label>
+                            <input type="radio"
+                                   name="selectedAnswer[@q.questionID]"
+                                   value="D" />
+                            @q.choiceD
+                        </label>
+                    </div>
+                }
+            </div>
+        }
+
+        <button type="submit" class="btn btn-black">Submit Test</button>
+    </form>
+</div>
+</div>
+
+

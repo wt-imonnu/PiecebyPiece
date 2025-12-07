@@ -1,0 +1,99 @@
+﻿@model PiecebyPiece.Models.mUSER
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+
+
+<center><span class="header-title">Edit User</span></center>
+
+
+
+<div class="row">
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="userID" />
+        <input type="hidden" asp-for="userPhotoPath" />
+
+        <div class="box-body-sm">
+            <div class="row">
+                <div class="col-md-6">
+                    <center>
+                        @if (Model.userPhotoPath != null)
+                        {
+                            <div class="mt-3">
+                                <p><strong>User Profile</strong></p>
+                                <img src="@Model.userPhotoPath" alt="Current Profile" style="max-width: 20vh; border-radius: 8px;" />
+                            </div>
+                        }
+                    </center>
+                    <div class="form-group">
+                        <label asp-for="userPhoto" class="control-label">Upload new profile</label>
+                        <input asp-for="userPhoto" type="file" class="form-control" />
+                        <span asp-validation-for="userPhoto" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="userName" class="control-label">First Name</label>
+                                <input asp-for="userName" class="form-control" />
+                                <span asp-validation-for="userName" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="userSurname" class="control-label">Surname</label>
+                                <input asp-for="userSurname" class="form-control" />
+                                <span asp-validation-for="userSurname" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label asp-for="userEmail" class="control-label"></label>
+                            <input asp-for="userEmail" class="form-control" />
+                            <span asp-validation-for="userEmail" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="userPassword" class="control-label"></label>
+                            <input asp-for="userPassword" class="form-control" />
+                            <span asp-validation-for="userPassword" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="userConfirmPassword" class="control-label"></label>
+                            <input asp-for="userConfirmPassword" class="form-control">
+                            <span asp-validation-for="userConfirmPassword" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-md-6 mb-2">
+                <a asp-action="Index" class="btn-cancel" aria-label="button">Cancle</a>
+            </div>
+            <div class="col-md-6">
+                <input type="submit" value="Save" class="btn-save" aria-label="button" />
+            </div>
+        </div>
+    </form>
+
+
+
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

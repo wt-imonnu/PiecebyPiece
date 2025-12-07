@@ -1,0 +1,62 @@
+﻿@model PiecebyPiece.Models.mADMIN
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+
+<center><span class="header-title">Create Admin</span></center>
+
+<div class="row">
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="box-body-sm">
+            <div class="row">
+                <div class="row">
+                    <div class="form-group">
+                        <label asp-for="adminName" class="control-label"></label>
+                        <input asp-for="adminName" class="form-control" />
+                        <span asp-validation-for="adminName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="adminSurname" class="control-label"></label>
+                        <input asp-for="adminSurname" class="form-control" />
+                        <span asp-validation-for="adminSurname" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="adminEmail" class="control-label"></label>
+                        <input asp-for="adminEmail" class="form-control" />
+                        <span asp-validation-for="adminEmail" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="adminPassword" class="control-label"></label>
+                        <input asp-for="adminPassword" class="form-control" />
+                        <span asp-validation-for="adminPassword" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="adminConfirmPassword" class="control-label"></label>
+                        <input asp-for="adminConfirmPassword" class="form-control" />
+                        <span asp-validation-for="adminConfirmPassword" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-md-6 mb-2">
+                <a asp-action="Index" class="btn-cancel" aria-label="button">Cancle</a>
+            </div>
+            <div class="col-md-6">
+                <input type="submit" value="Save" class="btn-save" aria-label="button" />
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

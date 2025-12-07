@@ -1,0 +1,99 @@
+﻿@model PiecebyPiece.Models.mVideoEP
+
+@{
+    ViewData["Title"] = "Edit";
+    string embedUrl = "";
+    if (!string.IsNullOrEmpty(Model.vdoFilePath))
+    {
+        embedUrl = Model.vdoFilePath.Replace("watch?v=", "embed/");
+    }
+}
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+
+<center><span class="header-title">Edit Episode</span></center>
+
+
+
+<div class="row">
+    <form asp-action="Edit">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="vdoID" />
+        <div class="box-body-sm">
+            <div class="row">
+                @if (ViewData["LessonName"] != null)
+                {
+                    <div class="form-group">
+                        <label class="form-label">Edit episode in lesson</label>
+                        <input type="text" class="form-control" value="@ViewData["LessonName"]" readonly />
+                    </div>
+                }
+            </div>
+            <hr />
+
+            <div class="row">
+                <div class="form-group">
+                    <label asp-for="vdoName" class="control-label">Episode Name</label>
+                    <input asp-for="vdoName" class="form-control" />
+                    <span asp-validation-for="vdoName" class="text-danger"></span>
+                </div>
+                <center>
+                    <p>Preview video in episode</p>
+                    @if (!string.IsNullOrEmpty(embedUrl))
+                    {
+                        <div style="width: 50%; max-width: 100%; margin: 0 auto;">
+                            <iframe src="@embedUrl"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    allowfullscreen
+                                    style="width: 100%; aspect-ratio: 16 / 9; height: auto; display: block;" alt="Current Video">
+                            </iframe>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>Could not process the video link. Please verify the URL in the correct YouTube embed format.</p>
+                    }
+                </center>
+                <div class="form-group">
+                    <label asp-for="vdoFilePath" class="control-label">Youtube Embed Link</label>
+                    <input asp-for="vdoFilePath" class="form-control" />
+                    <span asp-validation-for="vdoFilePath" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="epFilePath" class="control-label">File Download Link</label>
+                    <input asp-for="epFilePath" class="form-control" />
+                    <span asp-validation-for="epFilePath" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-md-6 mb-2">
+                <a asp-controller="cLesson"
+                   asp-action="Details"
+                   asp-route-id="@Model.lessonID"
+                   class="btn-cancel" aria-label="button">Cancle</a>
+            </div>
+            <div class="col-md-6">
+                <input type="submit" value="Save" class="btn-save" aria-label="button" />
+            </div>
+        </div>
+
+
+
+    </form>
+
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

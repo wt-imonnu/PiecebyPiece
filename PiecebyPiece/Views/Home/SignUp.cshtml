@@ -1,0 +1,124 @@
+﻿@model PiecebyPiece.Models.mUSER
+
+@{
+    ViewData["Title"] = "Sign Up";
+}
+
+<style>
+    body {
+        background: #65b6ac;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .signup-card {
+        background: #ffffff;
+        padding: 35px 45px;
+        border-radius: 15px;
+        max-width: 520px;
+        margin: 40px auto;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .signup-title {
+        text-align: center;
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .form-control {
+        padding: 10px 13px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .back-link {
+        display: block;
+        margin-top: 15px;
+        text-align: center;
+        color: #004fff;
+        font-weight: 500;
+    }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+</style>
+
+<center><span class="header-title">Sign Up</span></center>
+<div class="signup-card">
+
+
+    <form asp-action="SignUp" enctype="multipart/form-data" method="post">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <!-- Name -->
+        <div class="form-group mb-3">
+            <label asp-for="userName"></label>
+            <input asp-for="userName" class="form-control" />
+            <span asp-validation-for="userName" class="text-danger"></span>
+        </div>
+
+        <!-- Surname -->
+        <div class="form-group mb-3">
+            <label asp-for="userSurname"></label>
+            <input asp-for="userSurname" class="form-control" />
+            <span asp-validation-for="userSurname" class="text-danger"></span>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group mb-3">
+            <label asp-for="userEmail"></label>
+            <input asp-for="userEmail" class="form-control" />
+            <span asp-validation-for="userEmail" class="text-danger"></span>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group mb-3">
+            <label asp-for="userPassword"></label>
+            <input asp-for="userPassword" type="password" class="form-control" />
+            <span asp-validation-for="userPassword" class="text-danger"></span>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="form-group mb-3">
+            <label asp-for="userConfirmPassword">Confirm Password</label>
+            <input asp-for="userConfirmPassword" type="password" class="form-control" />
+            <span asp-validation-for="userConfirmPassword" class="text-danger"></span>
+        </div>
+
+        <!-- Photo -->
+        <div class="form-group mb-3">
+            <label asp-for="userPhoto"></label>
+            <input asp-for="userPhoto" type="file" accept="image/*" class="form-control" />
+            <span asp-validation-for="userPhoto" class="text-danger"></span>
+        </div>
+
+        <!-- Register Button -->
+        <center><button type="submit" class="btn btn-yellow">Register</button></center>
+
+    </form>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

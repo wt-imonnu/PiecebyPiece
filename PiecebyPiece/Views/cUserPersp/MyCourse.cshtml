@@ -1,0 +1,130 @@
+﻿@model List<mCOURSE>
+
+@{
+    ViewData["Title"] = "MyCourse";
+    Layout = "~/Views/Shared/_Layout_Navbar.cshtml";
+}
+
+@{
+    int index = (int)ViewBag.CurrentIndex;
+    var course = Model[index];
+    var courseList = ViewBag.CourseList as List<mCOURSE>;
+
+    var lessons = course.Lessons.OrderBy(l => l.lessonID).ToList();
+
+    var userProgress = ViewBag.UserProgress as Dictionary<int, bool>;
+    bool previousPassed = true; // เริ่มต้นบทแรกปลดล็อก
+
+}
+
+<div class="navigation mb-2">
+    <div class="row align-items-center"> <!-- align-items-center ทำให้แนวตั้งอยู่ตรงกลาง -->
+        <!-- Prev Button -->
+        <div class="col-md-2">
+            <a href="@Url.Action("MyCourse", new { index = index - 1 })" class="btn btn-black w-100"> Prev </a>
+        </div>
+
+        <!-- Dropdown -->
+        <div class="col-md-8">
+            <form method="get" action="@Url.Action("MyCourse")">
+                <select name="index" class="form-select" onchange="this.form.submit()">
+
+                    @for (int i = 0; i < courseList.Count; i++)
+                    {
+                        <option value="@i" selected="@(i == index)"> @courseList[i].courseName </option>
+                    }
+                </select>
+            </form>
+        </div>
+
+        <!-- Next Button -->
+        <div class="col-md-2">
+            <a href="@Url.Action("MyCourse", new { index = index + 1 })" class="btn btn-yellow w-100"> Next </a>
+        </div>
+    </div>
+</div>
+
+<div class="course-container">
+    @switch(index)
+    {
+        default:
+            <div class="box-body">
+                <div class="home-container">
+                    <div class="home-content">
+                        <h1>@course.courseName</h1>
+                        <p>@course.courseDescription</p>
+                        <br />
+                    </div>
+
+                    <img src="@course.coursePhotoPath" alt="@course.courseName">
+                </div>
+
+                <div class="row row-cols-1 row-cols-md-3 g-4" style="margin-top:50px">
+                        @if (course.Lessons != null && course.Lessons.Any())
+                        {
+                            @foreach (var lesson in lessons)
+                            {
+                            bool lessonWasPassed = userProgress != null &&
+                                                   userProgress.ContainsKey(lesson.lessonID) &&
+                                                   userProgress[lesson.lessonID];
+
+                            bool canAccess = previousPassed;
+
+                                <div class="col-md-4 mb-3">
+                                    @if (canAccess)
+                                    {
+                                        <!-- บทปลดล็อก -->
+                                        <a href="@Url.Action("LearnLesson", "cUserPersp", new { lessonID = lesson.lessonID })"
+                                           style="text-decoration: none; color: inherit;">
+                                            <div class="card h-100 shadow-sm">
+                                                <div class="card-body">
+
+                                                    <h5 class="card-title">@lesson.lessonName</h5>
+                                                    <p class="card-text">@lesson.lessonDescription</p>
+
+                                                @if (lessonWasPassed)
+                                                    {
+                                                        <span class="badge bg-success">Completed</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge bg-primary">Available</span>
+                                                    }
+
+                                                </div>
+                                            </div>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <!-- บทถูกล็อก -->
+                                        <div class="card h-100 shadow-sm" style="opacity:0.5;">
+                                            <div class="card-body">
+                                                <h5>@lesson.lessonName</h5>
+                                                <p>@lesson.lessonDescription</p>
+                                                <span class="badge bg-danger">Locked</span>
+                                             </div>
+                                        </div>
+                                    }
+                                </div>
+
+                            previousPassed = lessonWasPassed;
+
+                            }
+                        }
+
+                        else
+                        {
+                            <p>No lessons available for this course.</p>
+                        }
+                </div>
+
+            </div>
+        break;
+    }
+</div>
+
+
+
+
+

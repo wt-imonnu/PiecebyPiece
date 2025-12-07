@@ -1,0 +1,88 @@
+﻿@model PiecebyPiece.Models.mCOURSE
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+
+<center><span class="header-title">Edit Course</span></center>
+
+
+
+<div class="row">
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="courseID" />
+        <input type="hidden" asp-for="coursePhotoPath" />
+
+        <div class="box-body-sm">
+            <div class="row">
+                <div class="form-group">
+                    <center>
+                        @if (Model.coursePhotoPath != null)
+                        {
+                            <div class="mt-3">
+                                <p class="control-label">Preview Thumbnail</p>
+                                <img src="@Model.coursePhotoPath" alt="Current Thumbnail" style="max-width: 20vh; border-radius: 8px;" />
+                            </div>
+                        }
+                    </center>
+
+                    <label asp-for="coursePhoto" class="control-label">Uplaod new thumbnail</label>
+                    <input asp-for="coursePhoto" type="file" class="form-control" />
+                    <span asp-validation-for="coursePhoto" class="text-danger"></span>
+                </div>
+            </div>
+            <hr />
+
+            <div class="row" style="margin-top: 40px;">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="courseSubject" class="control-label">Subject</label>
+                        <select asp-for="courseSubject" class="form-control">
+                            <option value="">-- Select Subject --</option>
+                            <option value="MTH">Mathematics</option>
+                            <option value="PHY">Physics</option>
+                            <option value="COD">Programming</option>
+                            <option value="PROD">Production</option>
+                            <option value="ART">Art & Design</option>
+                        </select>
+                        <span asp-validation-for="courseSubject" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="form-group">
+                        <label asp-for="courseName" class="control-label">Course Name</label>
+                        <input asp-for="courseName" class="form-control" />
+                        <span asp-validation-for="courseName" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label asp-for="courseDescription" class="form-label">Description</label>
+                    <textarea asp-for="courseDescription" class="form-control"></textarea>
+                    <span asp-validation-for="courseDescription" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-md-6 mb-2">
+                <a asp-action="Index" class="btn-cancel" aria-label="button">Cancle</a>
+            </div>
+            <div class="col-md-6">
+                <input type="submit" value="Save" class="btn-save" aria-label="button" />
+            </div>
+        </div>
+    </form>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,253 @@
+﻿
+
+
+
+
+/* ================= Search Box ================= */
+.custom-search-input {
+    border: 1px solid #49454F;
+    border-right: none;
+    border-radius: 50px 0 0 50px !important;
+    font-size: 0.8rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    padding: 0px 20px;
+    height: auto;
+}
+
+    .custom-search-input:focus {
+        border-color: #49454F;
+        outline: none;
+        box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+    }
+
+.input-group .btn-black {
+    border-radius: 0 50px 50px 0 !important;
+    margin-left: 0;
+}
+
+
+/* ================= Layout ================= */
+.home-container {
+    position: relative;
+    margin: -50px;
+    overflow: hidden;
+    height: 500px;
+}
+
+    .home-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+.home-content {
+    position: absolute;
+    color: white;
+    text-align: left;
+    bottom: 0;
+    left: 0;
+    padding: 50px;
+}
+
+.course-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.episode-container, .test-container {
+    flex: 1;
+    min-width: 0;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+
+
+
+/* ================= Lesson Card ================= */
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    vertical-align: top;
+    word-wrap: break-word;
+    table-layout: fixed;
+}
+    .info-table th {
+        white-space: nowrap;
+        width: 100px;
+        vertical-align: top;
+    }
+
+    .info-table td {
+        white-space: normal;
+    }
+
+
+.card-question {
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 10px;
+}
+
+.question-photo {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+}
+
+.photo-placeholder {
+    width: 60px;
+    height: 60px;
+    border: 2px dashed #aaa;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    font-style: italic;
+    background-color: #f9f9f9;
+    font-size: 0.5rem;
+}
+
+
+
+/* ================= Course Card ================= */
+.card-course {
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 10px;
+    border-radius: 12px;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.card-link,.stretched-link {
+    text-decoration: none !important;
+    color: inherit;
+    display: block;
+    position: relative;
+    z-index: 1;
+}
+
+
+.card-table {
+    flex: 1;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.card-link:hover .card-course,
+.stretched-link:hover .card-course {
+    background-color: #F1F1F3;
+    cursor: pointer;
+    transform: translateY(-1px);
+    color: inherit;
+}
+
+.card-col1 img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.card-col2 {
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: #000;
+    text-align: left;
+    white-space: normal !important;
+}
+
+.card-action {
+    display: flex;
+    gap: 5px;
+    margin-left: auto;
+    justify-content: flex-end;
+    align-self: flex-start;
+}
+
+    .card-action a {
+        position: relative;
+        z-index: 2;
+        display: inline-block;
+        width: auto;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+.card-id {
+    font-size: 0.5rem;
+    font-weight: 200;
+}
+
+.card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.card-subtitle {
+    font-size: 0.8rem;
+    font-weight: 200;
+    color: #666;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+@media (max-width: 800px) {
+    .card-course {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+
+    .card-table {
+        width: 100%;
+    }
+
+    .card-action {
+        width: 100%;
+        justify-content: center;
+        margin-top: 10px;
+        flex-wrap: wrap;
+    }
+}
+
+.card-question {
+    display: block;
+    text-align: left;
+    padding: 10px;
+    border-radius: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 200;
+    color: #666;
+    transition: all 0.2s ease-in-out;
+}
+
+    /* 🌟 สไตล์สำหรับตัวเลือกที่ถูกต้อง (Correct Answer) 🌟 */
+    .card-question.bg-true {
+        border: none;
+        background-color: #198754;
+        color: #fff !important;
+    }
+
+    /* 🌟 สไตล์สำหรับตัวเลือกที่ไม่ถูกเลือก/ค่าเริ่มต้น 🌟 */
+    .card-question.bg-false {
+        border: 1px solid #dee2e6; /* เทาอ่อน */
+        color: #212529;
+    }

@@ -1,0 +1,144 @@
+﻿@model PiecebyPiece.Models.mCOURSE
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+<div class="box-body">
+    <!-- Action Bar -->
+    <div class="action-bar">
+        <div class="left-actions">
+            <a asp-controller="cUserPersp" asp-action="CourseLibrary" class="btn btn-mint-icon"><i class="bi bi-arrow-left"></i></a>
+        </div>
+    </div>
+
+
+
+    <!-- Course Infomation -->
+    <div style="display: flex; align-items: flex-start; gap: 20px; margin-top: 20px;">
+
+        <!-- รูปอยู่ซ้าย -->
+        @if (Model.coursePhotoPath != null)
+        {
+            <div class="mt-3">
+                <img src="@Model.coursePhotoPath" alt="Course Image" style="max-width: 200px; border-radius: 10px;margin-top:10px;" />
+            </div>
+        }
+
+        <!-- ชื่อ + ID + รายละเอียด อยู่ด้านขวา -->
+        <div style="flex: 1;">
+            <div class="section-title" style="font-size:28px; font-weight:bold;">
+                @Html.DisplayFor(model => model.courseName)
+            </div>
+
+            <div class="card-id" style="color:gray; margin-bottom:10px;">
+                #@Html.DisplayFor(model => model.courseSubject)-@Html.DisplayFor(model => model.courseID)
+            </div>
+
+            <table class="info-table">
+                <tr>
+                    <th style="padding-right:10px; vertical-align:top;">Description:</th>
+                    <td>@Html.DisplayFor(model => model.courseDescription)</td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div class="box-body" style="margin-top: 20px;">
+    <!-- Section Header -->
+    <div class="section-header mb-2">
+        <h5 class="section-title mb-0">Lessons</h5>
+    </div>
+
+    <!-- Lesson Card -->
+    <div class="course-container">
+        @if (Model.Lessons != null && Model.Lessons.Any())
+        {
+            @foreach (var lesson in Model.Lessons)
+            {
+                
+                    <div class="card-course border-top">
+                        <div class="card-table">
+                            <table>
+                                <tr>
+                                    <td class="card-col2">
+                                        <div class="card-id">#@lesson.Course?.courseSubject-@lesson.Course?.courseID-@lesson.lessonID </div>
+                                        <div class="card-title">@lesson.lessonName</div>
+                                        <p class="card-subtitle">@Html.DisplayFor(modelItem => @lesson.lessonDescription)</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+     
+            }
+        }
+        else
+        {
+            <p class="text-muted">No lessons available yet.</p>
+        }
+    </div>
+
+</div>
+
+
+<div class="modal fade" id="deleteCourseConfirmModal" tabindex="-1" aria-labelledby="deleteCourseConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteCourseConfirmModalLabel"><i class="bi bi-exclamation-triangle-fill me-2"></i> Confirm Course Deletion</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body text-start">
+                <p class="mb-2"><strong>Are you sure you want to delete this course?</strong></p>
+                <p class="mb-1">All associated data will also be removed:</p>
+                <ul class="list-unstyled ms-3">
+                    <li><i class="bi bi-x-circle-fill text-danger me-2"></i> Lessons</li>
+                    <li><i class="bi bi-x-circle-fill text-danger me-2"></i> Tests</li>
+                    <li><i class="bi bi-x-circle-fill text-danger me-2"></i> Related Data (e.g., Certificate links)</li>
+                </ul>
+                <p class="mt-3 mb-3"><strong>This action cannot be undone.</strong></p>
+                <p class="text-muted small">
+                    ID: <strong id="courseIdToDelete" class="text-danger"></strong> | Course: <strong id="courseNameToDelete" class="text-danger"></strong>
+                </p>
+            </div>
+
+            <div class="modal-footer">
+                <a id="confirmCourseDeleteButton" class="btn btn-danger">
+                    Delete Course
+                </a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var deleteCourseModal = new bootstrap.Modal(document.getElementById('deleteCourseConfirmModal'));
+
+            $('.btn-delete-course-modal').on('click', function (e) {
+                e.preventDefault();
+
+                var deleteUrl = $(this).data('delete-url');
+                var courseId = $(this).data('course-id');
+                var courseName = $(this).data('course-name');
+
+                $('#courseIdToDelete').text(courseId);
+                $('#courseNameToDelete').text(courseName);
+
+                $('#confirmCourseDeleteButton').attr('href', deleteUrl);
+
+                deleteCourseModal.show();
+            });
+        });
+    </script>
+}

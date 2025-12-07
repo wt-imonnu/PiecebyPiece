@@ -1,0 +1,259 @@
+﻿@model IEnumerable<PiecebyPiece.Models.mADMIN>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+
+<center><span class="header-title">Admin Panel</span></center>
+
+
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var activeClass = "nav-item-active";
+}
+
+<style>
+    .nav-item-active {
+        border-radius: 100px;
+        background-color: #5AB2A6;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+        .nav-item-active .nav-link {
+            color: #fff !important;
+            text-decoration: none;
+        }
+</style>
+<div class="box-body" style="padding: 10px; margin-bottom: 20px;">
+    <div class="d-flex justify-content-center" style="white-space: nowrap;">
+        <ul class="nav nav-pills admin-sub-nav">
+            <li class="nav-item @(currentController == "cEnrollment" ? activeClass : "")" style="margin: 0 5px;">
+                <a class="nav-link text-dark" asp-area="" asp-controller="cEnrollment" asp-action="Index" style="font-weight:600;">Enrollment</a>
+            </li>
+            <li class="nav-item @(currentController == "cCourse" ? activeClass : "")" style="margin: 0 5px;">
+                <a class="nav-link text-dark" asp-area="" asp-controller="cCourse" asp-action="Index" style="font-weight:600;">Course</a>
+            </li>
+            <li class="nav-item @(currentController == "cCertificate" ? activeClass : "")" style="margin: 0 5px;">
+                <a class="nav-link text-dark" asp-area="" asp-controller="cCertificate" asp-action="Index" style="font-weight:600;">Certificate</a>
+            </li>
+            <li class="nav-item @(currentController == "cUser" ? activeClass : "")" style="margin: 0 5px;">
+                <a class="nav-link text-dark" asp-area="" asp-controller="cUser" asp-action="Index" style="font-weight:600;">User</a>
+            </li>
+            <li class="nav-item @(currentController == "cAdminPanel" ? activeClass : "")" style="margin: 0 5px;">
+                <a class="nav-link text-dark" asp-area="" asp-controller="cAdminPanel" asp-action="Index" style="font-weight:600;">Admin</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+
+
+@{
+    var selectedSubjects = ViewBag.SelectedSubjects as List<string>;
+}
+<div class="box-body">
+    <form asp-action="Index" method="get" id="filterForm" class="mb-3">
+        <!-- Search -->
+        <div class="input-group mb-2">
+            <input type="text" name="cSearch" class="form-control custom-search-input" value="@Context.Request.Query["cSearch"]" placeholder="Search..." />
+            <button class="btn-black" type="submit" aria-label="Search">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
+    </form>
+
+    <div>
+        <!-- Section Header -->
+        <div class="section-header mb-2" style="margin-top:50px;">
+            <h5 class="section-title mb-0">All Admins</h5>
+            <a asp-action="Create" class="btn btn-black" aria-label="button">+ Create Admin</a>
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Admin Name</th>
+                    <th>Email</th>
+                    <th style="white-space: nowrap;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.adminID)</td>
+                        <td>@Html.DisplayFor(modelItem => item.adminName) @Html.DisplayFor(modelItem => item.adminSurname)</td>
+                        <td>@Html.DisplayFor(modelItem => item.adminEmail)</td>
+
+                        <td style="white-space: nowrap;">
+                            <a asp-action="Details" asp-route-id="@item.adminID" class=" btn btn-black-icon" aria-label="button"><i class="bi bi-info-circle-fill"></i></a>
+                            <a asp-action="Edit" asp-route-id="@item.adminID" class="btn btn-yellow-icon" aria-label="button"><i class="bi bi-pencil"></i></a>
+                            @{
+                                int currentLoggedInAdminId = (ViewBag.CurrentAdminId != null)
+                                ? Convert.ToInt32(ViewBag.CurrentAdminId) : 0;
+
+                                bool isForbiddenToDelete = (item.adminID == 1) || (item.adminID == currentLoggedInAdminId);
+                                string forbiddenReason = null;
+                                if (item.adminID == 1)
+                                {
+                                    forbiddenReason = "Admin1";
+                                }
+                                else if (item.adminID == currentLoggedInAdminId)
+                                {
+                                    forbiddenReason = "Self";
+                                }
+                            }
+                            @if (isForbiddenToDelete)
+                            {
+                                <a class="btn btn-pink-icon btn-forbidden-delete"
+                                   href="#"
+                                   data-forbidden-reason="@forbiddenReason"
+                                   title="You are not authorized to delete Admin ID: 1 or your own account.">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-pink-icon btn-delete-modal" aria-label="button"
+                                   data-delete-url="@Url.Action("Delete", "cAdminPanel", new { id = item.adminID })"
+                                   data-user-id="@item.adminID"
+                                   data-user-name="@item.adminName"
+                                   data-user-surname="@item.adminSurname"
+                                   href="#">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+
+</div>
+
+
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteConfirmModalLabel"><i class="bi bi-exclamation-triangle-fill me-2" aria-label="button"></i> Confirm Deletion</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+
+
+            <div class="modal-body text-start">
+                <p class="mb-2"><strong>Are you sure you want to delete this admin? This action cannot be undone.</strong></p>
+
+                <p class="text-muted small">
+                    ID: <strong id="userIdToDelete" class="text-danger"></strong> | User: <strong id="userNameToDelete" class="text-danger"></strong> <strong id="userSurnameToDelete" class="text-danger"></strong>
+                </p>
+
+                <form id="deleteForm" method="post" style="display: none;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="deleteUserIdInput" name="id" />
+                </form>
+
+            </div>
+
+
+
+            <div class="modal-footer">
+                <a id="confirmDeleteButton" class="btn btn-danger">
+                    aria-label="button"
+                    Delete Admin
+                </a>
+
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="button">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="errorAlertModal" tabindex="-1" aria-labelledby="errorAlertModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title" id="errorAlertModalLabel"><i class="bi bi-exclamation-octagon-fill me-2"></i> Error</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-start">
+                <p id="errorAlertMessage">
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" data-bs-dismiss="modal" aria-label="button">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            $('.btn-delete-modal').on('click', function (e) {
+                e.preventDefault();
+
+                var userId = $(this).data('user-id');
+                var userName = $(this).data('user-name');
+                var userSurname = $(this).data('user-surname');
+                var deleteUrl = $(this).data('delete-url');
+
+                $('#userIdToDelete').text(userId);
+                $('#userNameToDelete').text(userName);
+                $('#userSurnameToDelete').text(userSurname);
+
+                $('#deleteUserIdInput').val(userId);
+                $('#deleteForm').attr('action', deleteUrl);
+
+                var deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+                deleteModal.show();
+            });
+
+
+            $('#confirmDeleteButton').on('click', function () {
+                $('#deleteForm').submit();
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('.btn-forbidden-delete').on('click', function (e) {
+                e.preventDefault();
+
+                var reasonCode = $(this).data('forbidden-reason');
+                var message = "";
+
+
+                if (reasonCode === 'Admin1') {
+                    message = "<strong>Deletion failed:</strong> Cannot delete Admin ID: 1 (Primary Account).";
+                } else if (reasonCode === 'Self') {
+                    message = "<strong>Deletion failed:</strong> Cannot delete your own account.";
+                } else {
+                    message = "You are not authorized to perform this action.";
+                }
+
+                $('#errorAlertMessage').html(message);
+                var errorModal = new bootstrap.Modal(document.getElementById('errorAlertModal'));
+                errorModal.show();
+            });
+        });
+    </script>
+
+}
+
+
