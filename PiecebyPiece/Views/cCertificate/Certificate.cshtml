@@ -1,0 +1,294 @@
+﻿@model PiecebyPiece.Models.mCERTIFICATE
+@using System.Globalization;
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Certificate - @(Model.userName) @(Model.userSurname)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@400;700&family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #555;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .cert-container {
+            width: 1123px;
+            height: 794px;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            background-color: white;
+            overflow: hidden;
+        }
+
+        .cert-bg-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+            z-index: 0;
+            display: block; 
+        }
+
+        .cert-content-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10; 
+        }
+
+        .cert-name {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            text-align: center;
+            font-family: 'TH Sarabun New', sans-serif;
+            font-size: 80px;
+            font-weight: bold;
+            line-height: 1;
+            white-space: nowrap; 
+        }
+
+        .cert-course {
+            position: absolute;
+            top: 71%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            text-align: center;
+            font-size: 50px;
+            font-family: 'TH Sarabun New', sans-serif;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .cert-date {
+            position: absolute;
+            top: 78.5%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'TH Sarabun New', sans-serif;
+            text-align: center;
+            font-size: 20px;
+            white-space: nowrap;
+        }
+
+        .sign-left {
+            position: absolute;
+            bottom: 15%;
+            left: 19%;
+            width: 25%;
+            text-align: center;
+            font-family: 'TH Sarabun New', sans-serif;
+            font-size: 16px;
+            color: #0F3547;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        .sign-right {
+            position: absolute;
+            bottom: 15%;
+            right: 18.5%;
+            width: 25%;
+            text-align: center;
+            font-size: 16px;
+            font-family: 'TH Sarabun New', sans-serif;
+            color: #0F3547;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        .cert-id {
+            position: absolute;
+            bottom: 0px;
+            right: 30px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #666;
+            letter-spacing: 2px;
+            opacity: 0.3;
+            font-weight: bold;
+        }
+
+        .btn-download {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #FD7E14;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-family: sans-serif;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s;
+            border: none;
+        }
+
+            .btn-download:hover {
+                background: #e36b05;
+                transform: translateY(-2px);
+            }
+
+        #loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            font-family: sans-serif;
+            font-size: 20px;
+        }
+
+        .btn-download-fixed {
+            /* ตำแหน่ง: ตรึงที่มุมขวาบน */
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000; /* ให้อยู่เหนือองค์ประกอบอื่น ๆ */
+            /* รูปลักษณ์: สีดำ, ขาว, ขอบโค้ง */
+            background: #212529; /* สีดำ (Bootstrap dark) */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px; /* ขอบโค้งมน */
+            border: none;
+            cursor: pointer;
+            font-family: sans-serif;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: background 0.3s;
+        }
+
+            .btn-download-fixed:hover {
+                background: #000000; /* เข้มขึ้นเล็กน้อยเมื่อชี้ */
+            }
+    </style>
+</head>
+<body>
+
+    <div id="loading">Generating PDF...</div>
+
+    <button onclick="downloadPDF()" class="btn-download-fixed"><i class="bi bi-download"></i> Download PDF</button>
+
+    <div class="cert-container" id="certificate-content">
+        <img src="/images/certificate_template.png" class="cert-bg-image" alt="Certificate Background" crossorigin="anonymous" />
+
+        <div class="cert-content-layer">
+            <div class="cert-name">@Model.userName @Model.userSurname</div>
+            <div class="cert-course">@Model.Enrollment.Course.courseName</div>
+            <div class="cert-date">
+                @Model.cerDate.ToString("dd MMMM yyyy", CultureInfo.GetCultureInfo("en-US"))
+            </div>
+            <div class="cert-id">ID: @Model.cerID</div>
+
+        </div>
+    </div>
+
+
+
+
+        <script>
+            function downloadPDF() {
+                const btn = document.querySelector('.btn-download-fixed');
+                const loading = document.getElementById('loading');
+
+                btn.style.display = 'none';
+                loading.style.display = 'flex';
+
+                const body = document.body;
+                const originalDisplay = body.style.display;
+                const originalBg = body.style.backgroundColor;
+
+                body.style.display = 'block';
+                body.style.backgroundColor = 'white';
+                body.style.margin = '0';
+                body.style.overflow = 'hidden';
+
+                const element = document.getElementById('certificate-content');
+                const filename = 'Certificate @Model.cerID-@Model.userName @Model.userSurname' + '.pdf';
+                const opt = {
+                    margin:       0,
+                    filename:     filename,
+                    image:        { type: 'jpeg', quality: 1.0 },
+                    html2canvas:  {
+                        scale: 4,             
+                        useCORS: true,        
+                        scrollY: 0,
+                        scrollX: 0,
+                        letterRendering: true,  
+                    },
+                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+                };
+                setTimeout(() => {
+                    html2pdf().set(opt).from(element).save().then(function() {
+                        body.style.display = originalDisplay;
+                        body.style.backgroundColor = originalBg;
+                        body.style.margin = '';
+                        body.style.overflow = '';
+
+                        loading.style.display = 'none';
+                        btn.style.display = 'block';
+                    });
+                }, 500);
+            }
+
+        function adjustFontSize(elementSelector, initialSize, minSize) {
+            const element = document.querySelector(elementSelector);
+            if (!element) return;
+
+            
+            const containerWidth = element.offsetWidth;
+            let currentSize = initialSize;
+            element.style.fontSize = currentSize + 'px';
+            let contentWidth = element.scrollWidth;
+
+            while (contentWidth > containerWidth && currentSize > minSize) {
+                currentSize -= 1; 
+                element.style.fontSize = currentSize + 'px';
+                contentWidth = element.scrollWidth; 
+            }
+
+            if (currentSize <= minSize) {
+                element.style.fontSize = minSize + 'px';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', (event) => {
+            adjustFontSize('.cert-name', 80, 40);
+            adjustFontSize('.cert-course', 50, 25);
+        });
+
+        </script>
+</body>
+</html>

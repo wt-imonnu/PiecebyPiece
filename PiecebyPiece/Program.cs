@@ -1,5 +1,4 @@
-﻿using DinkToPdf;
-using DinkToPdf.Contracts;
+﻿
 using Microsoft.EntityFrameworkCore;
 using PiecebyPiece.Filters;
 using PiecebyPiece.Models;
@@ -20,7 +19,7 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddScoped<AdminAuthorizeFilter>();
 
-builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+
 
 
 var app = builder.Build();

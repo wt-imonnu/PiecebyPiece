@@ -122,6 +122,7 @@ namespace PiecebyPiece.Controllers
 
             return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("enrollID,enrollStatus,userID,courseID")] mENROLLMENT mENROLLMENT)
@@ -137,12 +138,26 @@ namespace PiecebyPiece.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    // 1. ใช้ courseID ที่ถูกส่งมา ดึงข้อมูล Course ทั้งหมด
+                    var course = await _context.dCourse
+                                            .FirstOrDefaultAsync(c => c.courseID == mENROLLMENT.courseID);
+
+                    if (course != null)
+                    {
+                        // 2. เติม courseName ลงใน mENROLLMENT Model ก่อนบันทึก
+                        // 💡 บรรทัดนี้คือการแก้ไขหลัก
+                        mENROLLMENT.courseName = course.courseName;
+                    }
+                    // ถ้า course เป็น null (ไม่น่าจะเกิดขึ้น) จะไม่บันทึกค่า
+
                     mENROLLMENT.enrollTime = DateTime.Now;
                     _context.Add(mENROLLMENT);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
             }
+
+            // Logic การสร้าง SelectList ซ้ำเมื่อเกิดข้อผิดพลาด
             ViewData["courseID"] = new SelectList(_context.dCourse
                 .Select(c => new { c.courseID, Display = $"#{c.courseID} | {c.courseName}" }),
                 "courseID", "Display", mENROLLMENT.courseID);

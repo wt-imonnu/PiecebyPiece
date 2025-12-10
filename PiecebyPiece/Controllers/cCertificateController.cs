@@ -1,6 +1,4 @@
-﻿using DinkToPdf;
-using DinkToPdf.Contracts;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -17,34 +15,16 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using static DinkToPdf.GlobalSettings;
 
 namespace PiecebyPiece.Controllers
 {
     public class cCertificateController : Controller
     {
         private readonly PiecebyPieceDBContext _context;
-        private readonly IConverter _converter;
 
-        private readonly ITempDataProvider _tempDataProvider;
-        private readonly ICompositeViewEngine _viewEngine;
-        private readonly IWebHostEnvironment _hostingEnvironment;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public cCertificateController(
-                                        PiecebyPieceDBContext context,
-                                        IConverter converter,
-                                        ITempDataProvider tempDataProvider,
-                                        ICompositeViewEngine viewEngine,
-                                        IWebHostEnvironment hostingEnvironment,
-                                        IHttpContextAccessor httpContextAccessor)
+        public cCertificateController(PiecebyPieceDBContext context)
         {
             _context = context;
-            _converter = converter;
-            _tempDataProvider = tempDataProvider;
-            _viewEngine = viewEngine;
-            _hostingEnvironment = hostingEnvironment;
-            _httpContextAccessor = httpContextAccessor;
         }
 
 
@@ -117,7 +97,6 @@ namespace PiecebyPiece.Controllers
 
 
 
-
         // ------------------ Create ------------------
         public IActionResult Create()
         {
@@ -149,6 +128,7 @@ namespace PiecebyPiece.Controllers
 
             var data = new
             {
+
                 courseID = enrollment.courseID,
                 courseName = enrollment.courseName,
                 userName = enrollment.User?.userName,
@@ -156,9 +136,12 @@ namespace PiecebyPiece.Controllers
             };
             return Json(data);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("cerID,cerDate,enrollID,courseName,userName,userSurname")] mCERTIFICATE mCERTIFICATE)
+        // 💡 เราไม่จำเป็นต้อง Bind courseName, userName, userSurname เพราะเราจะดึงมาเติมเอง
+        // แต่ต้องแน่ใจว่าฟอร์มส่ง enrollID มา
+        public async Task<IActionResult> Create([Bind("cerID,cerDate,enrollID")] mCERTIFICATE mCERTIFICATE)
         {
             bool certificateExists = await _context.dCertificate.AnyAsync(c => c.enrollID == mCERTIFICATE.enrollID);
 
@@ -170,10 +153,35 @@ namespace PiecebyPiece.Controllers
 
             if (ModelState.IsValid && !certificateExists)
             {
-                _context.Add(mCERTIFICATE);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                // 1. ดึงข้อมูล Enrollment ที่เกี่ยวข้อง
+                var enrollment = await _context.dEnrollment
+                    .Include(e => e.User)
+                    .FirstOrDefaultAsync(e => e.enrollID == mCERTIFICATE.enrollID);
+
+                if (enrollment == null)
+                {
+                    ModelState.AddModelError("enrollID", "Enrollment ID not found.");
+                }
+                else
+                {
+                    // 2. เติมข้อมูลที่ขาดหายไปลงใน mCERTIFICATE ก่อนบันทึก
+
+                    // เติม userID (สมมติว่า mCERTIFICATE มี property ชื่อ userID)
+                    // mCERTIFICATE.userID = enrollment.userID; 
+
+                    // เติม courseName และ userName/userSurname (ถ้าไม่ได้มาจากฟอร์ม)
+                    mCERTIFICATE.courseName = enrollment.courseName;
+                    mCERTIFICATE.userName = enrollment.User?.userName;
+                    mCERTIFICATE.userSurname = enrollment.User?.userSurname;
+
+                    // 3. บันทึก
+                    _context.Add(mCERTIFICATE);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
             }
+
+            // ถ้ามี Error (ModelState ไม่ Valid หรือ Enrollment ID ไม่ถูกต้อง)
             ViewData["enrollID"] = new SelectList(_context.dEnrollment, "enrollID", "enrollID", mCERTIFICATE.enrollID);
             return View(mCERTIFICATE);
         }
@@ -217,14 +225,7 @@ namespace PiecebyPiece.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!mCERTIFICATEExists(mCERTIFICATE.cerID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -249,55 +250,40 @@ namespace PiecebyPiece.Controllers
 
 
 
-        //----------------Download----------------
-        public async Task<IActionResult> Download(int enrollID)
+        //----------------Certificate Gennerator----------------
+        public async Task<IActionResult> Certificate(int enrollID)
         {
-            var certificate = await _context.dCertificate
-                .Include(c => c.Enrollment)
-                .FirstOrDefaultAsync(c => c.enrollID == enrollID);
-            if (certificate == null)
-                return NotFound("Certificate data not found.");
-
-            int? currentUserID = HttpContext.Session.GetInt32("userID");
-            if (!currentUserID.HasValue || certificate.Enrollment?.userID != currentUserID)
+   
+            int? userID = HttpContext.Session.GetInt32("userID");
+            if (userID == null)
             {
+  
                 return RedirectToAction("Login", "cUser");
             }
 
-            string htmlContent = await RenderViewToStringAsync("CertificatePDF", certificate);
+          
+            var cert = await _context.dCertificate
+                .Include(c => c.Enrollment)
+                    .ThenInclude(e => e.User)
+                .Include(c => c.Enrollment)
+                    .ThenInclude(e => e.Course)
+                .FirstOrDefaultAsync(c =>
+                    c.enrollID == enrollID &&
+                    c.Enrollment.userID == userID
+                );
 
-
-            var doc = new HtmlToPdfDocument()
+            if (cert == null)
             {
-                GlobalSettings = {
-                    ColorMode = ColorMode.Color,
-                    Orientation = Orientation.Landscape,
-                    PaperSize = DinkToPdf.PaperKind.A4,
-                    Margins = new MarginSettings { Top = 10, Bottom = 10, Left = 10, Right = 10 },
-                    DPI = 300,
-                },
-                Objects = {
-                    new ObjectSettings()
-                    {
-                        HtmlContent = htmlContent,
-                        PagesCount = true,
-                        WebSettings = { DefaultEncoding = "utf-8" },
-                    }
-                }
+ 
+                return NotFound();
+            }
 
-            };
-
-            byte[] pdf = _converter.Convert(doc);
-
-            string fullName = $"{certificate.userName} {certificate.userSurname}";
-            string fileName = $"Certificate_{fullName}_{certificate.cerID}.pdf";
-
-            return File(pdf, "application/pdf", fileName);
+            return View(cert);
         }
 
 
-        // ------------------ User Certificate List ------------------
-        public async Task<IActionResult> UserCertificateList()
+        //----------------My Certificate----------------
+        public async Task<IActionResult> MyCertificate()
         {
             var cPersp = GetLoggedInUserFromSession();
 
@@ -320,6 +306,7 @@ namespace PiecebyPiece.Controllers
 
             var userCertificates = await _context.dCertificate
                                     .Include(c => c.Enrollment)
+                                    .ThenInclude(e => e.Course)
                                     .Where(c => c.Enrollment != null && c.Enrollment.userID == user.userID)
                                     .OrderByDescending(c => c.cerDate)
                                     .ToListAsync();
@@ -327,38 +314,6 @@ namespace PiecebyPiece.Controllers
 
         }
 
-
-
-        // -----------------------------------
-        private bool mCERTIFICATEExists(int id)
-        {
-            return _context.dCertificate.Any(e => e.cerID == id);
-        }
-        private async Task<string> RenderViewToStringAsync<TModel>(string viewName, TModel model)
-        {
-            var httpContext = this.HttpContext;
-            var viewResult = _viewEngine.FindView(ControllerContext, viewName, false);
-
-            if (viewResult.View == null)
-            {
-                throw new ArgumentNullException($"Unable to find view '{viewName}'. The following locations were searched: {string.Join(",", viewResult.SearchedLocations)}");
-            }
-
-            using (var writer = new StringWriter())
-            {
-                var viewDictionary = new ViewDataDictionary<TModel>(new EmptyModelMetadataProvider(), new ModelStateDictionary()) { Model = model };
-                var viewContext = new ViewContext(
-                    ControllerContext,
-                    viewResult.View,
-                    viewDictionary,
-                    new TempDataDictionary(httpContext, _tempDataProvider),
-                    writer,
-                    new HtmlHelperOptions()
-                );
-                await viewResult.View.RenderAsync(viewContext);
-                return writer.ToString();
-            }
-        }
 
         //----------------- Navbar -------------------
         private mUSER? GetLoggedInUserFromSession()

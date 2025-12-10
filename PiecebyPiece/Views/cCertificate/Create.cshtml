@@ -52,6 +52,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label asp-for="cerDate" class="control-label">Certificate Issue Date</label>
+                        <input type="hidden" id="ClientCerDate" name="cerDate" />
                         <input asp-for="cerDate" class="form-control" />
                         <span asp-validation-for="cerDate" class="text-danger"></span>
                     </div>
@@ -127,6 +128,23 @@
                     }
                 });
             });
+        });
+
+            document.addEventListener('DOMContentLoaded', function () {
+            // หาฟอร์มของคุณ (อาจจะต้องเปลี่ยน #myForm ให้เป็น ID ของฟอร์มจริง)
+            const form = document.querySelector('form');
+
+            if (form) {
+                form.addEventListener('submit', function (event) {
+                    // ดึงเวลาปัจจุบันในรูปแบบ ISO string (รวม Timezone Offset)
+                    const clientTime = new Date().toISOString();
+
+                    // กำหนดค่าให้กับฟิลด์ซ่อน 'cerDate'
+                    document.getElementById('ClientCerDate').value = clientTime;
+
+                    // โค้ดที่เหลือในการ Submit ฟอร์มจะทำงานต่อ...
+                });
+            }
         });
     </script>
 }
