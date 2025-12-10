@@ -10,54 +10,16 @@
     var currentStatusFilter = (string)ViewBag.CurrentStatusFilter ?? "All";
 
     if (selectedSubjects == null) selectedSubjects = new List<string>();
+
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var activeClass = "nav-item-active";
+
 }
 
 
 
 <center><span class="header-title">Enrollment Panel</span></center>
 
-
-
-@{
-    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
-
-    var activeClass = "nav-item-active";
-}
-
-<style>
-    .nav-item-active {
-        border-radius: 100px;
-        background-color: #5AB2A6;
-        transition: all 0.3s ease;
-        text-decoration: none;
-    }
-
-        .nav-item-active .nav-link {
-            color: #fff !important;
-            text-decoration: none;
-        }
-</style>
-<div class="box-body" style="padding: 10px; margin-bottom: 20px;">
-    <div class="d-flex justify-content-center" style="white-space: nowrap;">
-        <ul class="nav nav-pills admin-sub-nav">
-            <li class="nav-item @(currentController == "cEnrollment" ? activeClass : "")" style="margin: 0 5px;">
-                <a class="nav-link text-dark" asp-area="" asp-controller="cEnrollment" asp-action="Index" style="font-weight:600;">Enrollment</a>
-            </li>
-            <li class="nav-item @(currentController == "cCourse" ? activeClass : "")" style="margin: 0 5px;">
-                <a class="nav-link text-dark" asp-area="" asp-controller="cCourse" asp-action="Index" style="font-weight:600;">Course</a>
-            </li>
-            <li class="nav-item @(currentController == "cCertificate" ? activeClass : "")" style="margin: 0 5px;">
-                <a class="nav-link text-dark" asp-area="" asp-controller="cCertificate" asp-action="Index" style="font-weight:600;">Certificate</a>
-            </li>
-            <li class="nav-item @(currentController == "cUser" ? activeClass : "")" style="margin: 0 5px;">
-                <a class="nav-link text-dark" asp-area="" asp-controller="cUser" asp-action="Index" style="font-weight:600;">User</a>
-            </li>
-            <li class="nav-item @(currentController == "cAdminPanel" ? activeClass : "")" style="margin: 0 5px;">
-                <a class="nav-link text-dark" asp-area="" asp-controller="cAdminPanel" asp-action="Index" style="font-weight:600;">Admin</a>
-            </li>
-        </ul>
-    </div>
-</div>
 
 
 
@@ -74,7 +36,6 @@
         <div class="d-flex align-items-center flex-wrap gap-3 mb-4">
 
             <div class="d-flex align-items-center flex-wrap gap-2">
-                <i class="bi bi-funnel-fill filter-icon me-2" style="color:#49454F;"></i>
                 <span class="fw-semibold" style="color:#49454F;">Subject Filter:</span>
 
                 <div class="d-flex flex-wrap gap-1" onchange="this.form.submit()">
@@ -87,25 +48,47 @@
                 </div>
             </div>
 
-            <div class="d-flex align-items-center gap-2 ms-4">
+            <div class="d-flex align-items-center gap-2 ms-4 custom-filter-dropdown">
                 <span class="fw-semibold" style="color:#49454F;">Status:</span>
-                <select name="enrollStatusFilter" class="form-select form-select-sm" style="width: 150px;" onchange="this.form.submit()">
 
-                    <option value="All" selected="@(currentStatusFilter == "All" ? "selected" : null)">All</option>
-                    <option value="In Progress" selected="@(currentStatusFilter == "In Progress" ? "selected" : null)">In Progress</option>
-                    <option value="Completed" selected="@(currentStatusFilter == "Completed" ? "selected" : null)">Completed</option>
+                <input type="hidden" name="enrollStatusFilter" id="hiddenStatusFilter" value="@currentStatusFilter" />
 
-                </select>
+                <div class="dropdown" data-filter-name="enrollStatusFilter" data-placeholder="All" data-current-value="@currentStatusFilter">
+                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle text-start"
+                            type="button"
+                            id="statusDropdownButton"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            style="width: 150px;">
+                        @currentStatusFilter
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="statusDropdownButton">
+                        <li><a class="dropdown-item filter-item" href="#" data-value="All">All</a></li>
+                        <li><a class="dropdown-item filter-item" href="#" data-value="In Progress">In Progress</a></li>
+                        <li><a class="dropdown-item filter-item" href="#" data-value="Completed">Completed</a></li>
+                    </ul>
+                </div>
             </div>
 
-            <div class="d-flex align-items-center gap-2 ms-4">
+            <div class="d-flex align-items-center gap-2 ms-4 custom-filter-dropdown">
                 <span class="fw-semibold" style="color:#49454F;">Sort By:</span>
-                <select name="sortOrder" class="form-select form-select-sm" style="width: 200px;" onchange="this.form.submit()">
 
-                    <option value="time_desc" selected="@(currentSort == "time_desc" ? "selected" : null)">Decending</option>
-                    <option value="time_asc" selected="@(currentSort == "time_asc" ? "selected" : null)">Ascending</option>
+                <input type="hidden" name="sortOrder" id="hiddenSortOrder" value="@currentSort" />
 
-                </select>
+                <div class="dropdown" data-filter-name="sortOrder" data-placeholder="Decending" data-current-value="@currentSort">
+                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle text-start"
+                            type="button"
+                            id="sortDropdownButton"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            style="width: 200px;">
+                        @(currentSort == "time_asc" ? "Ascending" : "Decending")
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="sortDropdownButton">
+                        <li><a class="dropdown-item filter-item" href="#" data-value="time_desc">Decending</a></li>
+                        <li><a class="dropdown-item filter-item" href="#" data-value="time_asc">Ascending</a></li>
+                    </ul>
+                </div>
             </div>
 
         </div>
@@ -117,34 +100,52 @@
             <h5 class="section-title mb-0">All Enrollments</h5>
             <a asp-action="Create" class="btn btn-black" aria-label="button">+ Enroll</a>
         </div>
-        <table class="table">
+        <table class="table table-hover">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Date</th>
-                    <th>Fullname</th>
-                    <th>Course</th>
-                    <th>Status</th>
-                    <th></th>
+                    <th style="width: 5%;">ID</th>
+                    <th style="width: 15%;">Date</th>
+                    <th style="width: 20%;">Fullname</th>
+                    <th style="width: 30%;">Course</th>
+                    <th style="width: 15%;"></th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td>@Html.DisplayFor(modelItem => item.enrollID)</td>
-                        <td>@Html.DisplayFor(modelItem => item.enrollTime)</td>
-                        <td>@Html.DisplayFor(modelItem => item.User.userName) @Html.DisplayFor(modelItem => item.User.userSurname)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Course.courseName)</td>
-                        <td>@Html.DisplayFor(modelItem => item.enrollStatus)</td>
+                        <td>@item.enrollID</td>
                         <td>
-                            <a asp-action="Details" asp-route-id="@item.enrollID" class=" btn btn-black-icon" aria-label="button"><i class="bi bi-info-circle-fill"></i></a>
-                            <a asp-action="Edit" asp-route-id="@item.enrollID" class="btn btn-yellow-icon" aria-label="button"><i class="bi bi-pencil"></i></a>
-                            <a class="btn btn-pink-icon btn-delete-modal"
+                            @item.enrollTime.ToShortDateString()
+                            @{
+                                string status = item.enrollStatus;
+                                string badgeClass = status == "Completed" ? "bg-success" : "bg-primary";
+                            }
+                            <span class="badge @badgeClass" style="font-size: 0.75em;">
+                                @status
+                            </span>
+                        </td>
+                        <td>
+                            <div class="text-wrap text-break">
+                                @item.User.userName @item.User.userSurname
+                            </div>
+                        </td>
+                        <td>
+                            <div class="text-wrap text-break">
+                                #@item.Course.courseID | @item.Course.courseName
+                            </div>
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.enrollID" class="btn btn-black-icon btn-sm" aria-label="button"><i class="bi bi-info-circle-fill"></i></a>
+                            <a asp-action="Edit" asp-route-id="@item.enrollID" class="btn btn-yellow-icon btn-sm" aria-label="button"><i class="bi bi-pencil"></i></a>
+                            <a class="btn btn-pink-icon btn-sm btn-delete-modal"
                                data-delete-url="@Url.Action("Delete", new { id = item.enrollID })"
                                data-enroll-id="@item.enrollID"
                                data-user-id="@item.userID"
-                               data-enroll-course="@item.courseName"
+                               data-enroll-course="@item.Course.courseName"
                                href="#">
                                 <i class="bi bi-trash"></i>
                             </a>
@@ -225,6 +226,39 @@
 
             $('#confirmCourseDeleteButton').on('click', function () {
                 $('#deleteEnrollmentForm').submit();
+            });
+        });
+
+        $(document).ready(function () {
+            function initializeFilterDropdown(containerElement) {
+                const $container = $(containerElement);
+                const filterName = $container.data('filter-name');
+                const $hiddenInput = $(`input[name="${filterName}"]`);
+                const $dropdownButton = $container.find('.dropdown-toggle');
+                const $dropdownItems = $container.find('.filter-item');
+                const initialText = $dropdownItems.filter(`[data-value="${$hiddenInput.val()}"]`).text().trim();
+                if (initialText) {
+                    $dropdownButton.text(initialText);
+                }
+                $dropdownItems.on('click', function(e) {
+                    e.preventDefault();
+
+                    const $clickedItem = $(this);
+                    const selectedValue = $clickedItem.data('value');
+                    const selectedText = $clickedItem.text().trim();
+                    const form = $hiddenInput.closest('form');
+
+                    $hiddenInput.val(selectedValue);
+                    $dropdownButton.text(selectedText);
+
+                    if (form.length) {
+                        form.submit();
+                    }
+                });
+            }
+
+            $('.custom-filter-dropdown .dropdown').each(function() {
+                initializeFilterDropdown(this);
             });
         });
     </script>

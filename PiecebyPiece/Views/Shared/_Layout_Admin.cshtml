@@ -19,18 +19,38 @@
             <div class="row justify-content-center">
                 <div class="col-12">
                     <nav class="navbar navbar-expand-sm navbar-light mb-3" style="background: transparent; box-shadow: none; border: none;">
-
                         <div class="d-flex w-100 align-items-center">
-
+                            <!-- LOGO -->
                             <div class="d-flex align-items-center me-4">
-                                <a asp-area="" asp-controller="cAdminPanel" asp-action="Index">
+                                <a asp-area="" asp-controller="cCourse" asp-action="Index">
                                     <img src="~/images/logo.png" alt="PiecebyPiece" style="height: 70px; object-fit: contain;">
                                 </a>
                             </div>
 
-                            <div class="ms-auto"></div>
+                            <!-- MENU -->
+                            <div class="d-flex ms-auto align-items-center">
+                                <ul class="nav me-3">
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle text-dark fw-semibold"
+                                           href="#"
+                                           role="button"
+                                           data-bs-toggle="dropdown"
+                                           aria-expanded="false" style="color: #fff !important;">
+                                            Menu
+                                        </a>
 
+                                        <ul class="dropdown-menu dropdown-menu-end custom-admin-dropdown">
+                                            <li><a class="dropdown-item" asp-controller="cCourse" asp-action="Index">Course</a></li>
+                                            <li><a class="dropdown-item" asp-controller="cUser" asp-action="Index">User</a></li>
+                                            <li><a class="dropdown-item" asp-controller="cEnrollment" asp-action="Index">Enrollment</a></li>
+                                            <li><a class="dropdown-item" asp-controller="cCertificate" asp-action="Index">Certificate</a></li>
+                                            <li><a class="dropdown-item" asp-controller="cAdminPanel" asp-action="Index">Admin</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
 
+                            <!-- LOGOUT BUTTON -->
                             <div class="d-flex justify-content-end">
                                 <button type="button"
                                         class="btn btn-yellow"
@@ -39,10 +59,9 @@
                                     Logout <i class="bi bi-box-arrow-right"></i>
                                 </button>
                             </div>
-
                         </div>
                     </nav>
-                </div>
+                </div>             
             </div>
         </div>
     </header>
@@ -56,9 +75,34 @@
     </div>
 
     <style>
-        /* FOOTER SECTION */
+        /*------NAVBAR SECTION-----*/
+        .custom-admin-dropdown {
+            min-width: 150px;
+            width: auto;
+            overflow: visible;
+            max-height: none;
+            background-color: #fff;
+            border-radius: 0.375rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
+        }
+
+            .custom-admin-dropdown .dropdown-item {
+                white-space: nowrap;
+                padding: 0.5rem 1rem;
+                background-color: transparent;
+            }
+
+                .custom-admin-dropdown .dropdown-item:hover,
+                .custom-admin-dropdown .dropdown-item:focus {
+                    background-color: #5AB2A6 !important;
+                    color: #fff !important;
+                    border-radius: 0;
+                }
+
+
+        /*------FOOTER SECTION-----*/
         .custom-footer {
-            background: #5AB2A6; /* สีพื้นหลังเหมือนภาพ */
+            background: #5AB2A6;
             text-align: center;
             margin-top: 20x;
             border-top-left-radius: 0px;
@@ -72,11 +116,10 @@
             gap: 20px;
         }
 
-        /* โลโก้จริง */
         .footer-logo-img {
             width: 90px;
             height: 90px;
-            object-fit: contain; /* ให้โลโก้ไม่บิด */
+            object-fit: contain;
         }
 
         .footer-logo-text h2 {
@@ -127,7 +170,6 @@
     <footer class="custom-footer">
         <div class="footer-logo-section">
 
-            <!-- เปลี่ยนโลโก้ตรงนี้ -->
             <img src="~/images/logo.png" class="footer-logo-img" />
 
         </div>
