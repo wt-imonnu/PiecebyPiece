@@ -159,16 +159,16 @@ namespace PiecebyPiece.Controllers
 
             // Logic การสร้าง SelectList ซ้ำเมื่อเกิดข้อผิดพลาด
             ViewData["courseID"] = new SelectList(_context.dCourse
-                .Select(c => new { c.courseID, Display = $"#{c.courseID} | {c.courseName}" }),
-                "courseID", "Display", mENROLLMENT.courseID);
+                    .Select(c => new { c.courseID, Display = $"#{c.courseID} {c.courseName}" }),
+                    "courseID", "Display", mENROLLMENT.courseID); // ต้องใช้ dCourse
 
+            // *** 2. แก้ไข: ต้องสร้าง SelectList สำหรับ UserID ***
             ViewData["userID"] = new SelectList(_context.dUser
-                .Select(u => new { u.userID, Display = $"#{u.userID} | {u.userName}" }),
+                .Select(u => new { u.userID, Display = $"#{u.userID} {u.userName}" }),
                 "userID", "Display", mENROLLMENT.userID);
 
             return View(mENROLLMENT);
         }
-
 
 
         // ------------------ Edit ------------------
@@ -176,30 +176,43 @@ namespace PiecebyPiece.Controllers
         {
             if (id == null) return NotFound();
 
-            var mENROLLMENT = await _context.dEnrollment.FindAsync(id);
+            // ดึง mENROLLMENT พร้อมดึงข้อมูล User ที่เกี่ยวข้อง (Eager Loading)
+            var mENROLLMENT = await _context.dEnrollment
+                .Include(e => e.User) // ✨ เพิ่ม: Include User เพื่อแสดงชื่อ
+                .FirstOrDefaultAsync(e => e.enrollID == id);
+
             if (mENROLLMENT == null) return NotFound();
 
+            // ไม่ต้องสร้าง SelectList สำหรับ UserID เพราะเราจะแสดงผลเป็นข้อความ
+            // แต่เราต้องใช้ข้อมูล User เพื่อแสดงชื่อ
+            if (mENROLLMENT.User != null)
+            {
+                ViewData["UserNameDisplay"] = $"#{mENROLLMENT.User.userID} | {mENROLLMENT.User.userName}";
+            }
 
+            // SelectList สำหรับ CourseID ยังคงเดิม
             ViewData["courseID"] = new SelectList(_context.dCourse
                 .Select(c => new {
                     c.courseID,
                     Display = $"#{c.courseID} | {c.courseName}"
                 }), "courseID", "Display", mENROLLMENT.courseID);
 
-            ViewData["userID"] = new SelectList(_context.dUser
-                .Select(u => new {
-                    u.userID,
-                    Display = $"#{u.userID} | {u.userName}"
-                }), "userID", "Display", mENROLLMENT.userID);
-
             return View(mENROLLMENT);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("enrollID,enrollTime,enrollStatus,userID,courseID,courseName")] mENROLLMENT mENROLLMENT)
+        // ✨ แก้ไข: ลบ courseName ออกจาก Bind ถ้าคุณไม่เก็บไว้ในตาราง enrollment
+        // และรวม enrollmentTime เพื่อป้องกันการสูญหายของค่าใน Hidden Field
+        public async Task<IActionResult> Edit(int id, [Bind("enrollID,enrollTime,enrollStatus,userID,courseID")] mENROLLMENT mENROLLMENT)
         {
             if (id != mENROLLMENT.enrollID) return NotFound();
 
+            // 1. ดึง enrollment เดิม เพื่อรักษาค่า enrollTime และ courseName (ถ้ามี)
+            var originalEnrollment = await _context.dEnrollment.AsNoTracking().FirstOrDefaultAsync(e => e.enrollID == id);
+            if (originalEnrollment == null) return NotFound();
+
+            // 2. ตรวจสอบว่า UserID และ CourseID ใหม่ ไม่ซ้ำกับรายการอื่น
             bool alreadyEnrolled = await _context.dEnrollment
                 .AnyAsync(e => e.userID == mENROLLMENT.userID
                                && e.courseID == mENROLLMENT.courseID
@@ -213,9 +226,17 @@ namespace PiecebyPiece.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    // 3. เติมข้อมูลที่ขาดหายไปกลับเข้าไปใน mENROLLMENT ก่อน Update
+                    mENROLLMENT.enrollTime = originalEnrollment.enrollTime;
+
+                    // ✨ ดึง courseName ใหม่ (ตามที่คุณต้องการในส่วน Create)
+                    var course = await _context.dCourse.FirstOrDefaultAsync(c => c.courseID == mENROLLMENT.courseID);
+                    mENROLLMENT.courseName = course?.courseName;
+
                     try
                     {
-                        _context.Update(mENROLLMENT);
+                        // ต้องกำหนด Entity State เป็น Modified เนื่องจากใช้ AsNoTracking ในการดึง originalEnrollment
+                        _context.Entry(mENROLLMENT).State = EntityState.Modified;
                         await _context.SaveChangesAsync();
                         return RedirectToAction(nameof(Index));
                     }
@@ -226,16 +247,17 @@ namespace PiecebyPiece.Controllers
                     }
                 }
             }
+
+            // ถ้าเกิดข้อผิดพลาด: สร้าง ViewData ใหม่
+            ViewData["UserNameDisplay"] = originalEnrollment.courseName; // อาจจะใช้ชื่อผู้ใช้เดิมแทน
+
             ViewData["courseID"] = new SelectList(_context.dCourse
                 .Select(c => new { c.courseID, Display = $"#{c.courseID} | {c.courseName}" }),
                 "courseID", "Display", mENROLLMENT.courseID);
 
-            ViewData["userID"] = new SelectList(_context.dUser
-                .Select(u => new { u.userID, Display = $"#{u.userID} | {u.userName}" }),
-                "userID", "Display", mENROLLMENT.userID);
-
             return View(mENROLLMENT);
         }
+        // ต้องมีฟังก์ชัน mENROLLMENTExists(int id) ที่ถูกประกาศไว้ใน Controller
 
 
 

@@ -72,7 +72,7 @@ namespace PiecebyPiece.Controllers
                 HttpContext.Session.SetString("adminName", admin.adminName);
                 HttpContext.Session.SetInt32("adminID", admin.adminID);
                 HttpContext.Session.SetString("adminEmail", admin.adminEmail);
-                return RedirectToAction("Index", "cEnrollment");
+                return RedirectToAction("Index", "cCourse");
             }
 
             var user = _context.dUser

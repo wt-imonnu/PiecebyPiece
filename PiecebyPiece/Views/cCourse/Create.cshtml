@@ -16,17 +16,26 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label asp-for="courseSubject" class="control-label">Subject</label>
-                        <select asp-for="courseSubject" class="form-control">
-                            <option value="">-- Select Subject --</option>
-                            <option value="MTH">Mathematics</option>
-                            <option value="PHY">Physics</option>
-                            <option value="COD">Programming</option>
-                            <option value="PROD">Production</option>
-                            <option value="ART">Art & Design</option>
-                        </select>
-                        <span asp-validation-for="courseSubject" class="text-danger"></span>
+                        <input type="hidden" asp-for="courseSubject" id="hiddenCourseSubject" />
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start"
+                                    type="button"
+                                    id="subjectDropdownButton"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                -- Select Subject --
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="subjectDropdownButton" id="subjectDropdownList">
+                                <li><a class="dropdown-item subject-item" href="#" data-value="MTH">Mathematics</a></li>
+                                <li><a class="dropdown-item subject-item" href="#" data-value="PHY">Physics</a></li>
+                                <li><a class="dropdown-item subject-item" href="#" data-value="COD">Programming</a></li>
+                                <li><a class="dropdown-item subject-item" href="#" data-value="PROD">Production</a></li>
+                                <li><a class="dropdown-item subject-item" href="#" data-value="ART">Art & Design</a></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
+
                 <div class="col-md-9">
                     <div class="form-group">
                         <label asp-for="courseName" class="control-label">Course Name</label>
@@ -60,3 +69,42 @@
         </div>
     </form>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const dropdownItems = document.querySelectorAll('#subjectDropdownList .subject-item');
+            const hiddenInput = document.getElementById('hiddenCourseSubject');
+            const dropdownButton = document.getElementById('subjectDropdownButton');
+            const placeholderText = '-- Select Subject --';
+            if (hiddenInput.value === "") {
+                 dropdownButton.textContent = placeholderText;
+            }
+
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    const selectedValue = this.getAttribute('data-value');
+                    const selectedText = this.textContent.trim();
+
+                    hiddenInput.value = selectedValue;
+                    if (selectedValue === "") {
+                        dropdownButton.textContent = placeholderText;
+                    } else {
+                        dropdownButton.textContent = selectedText;
+                    }
+
+                    const validationSpan = document.querySelector(`span[data-valmsg-for="courseSubject"]`);
+                    if (validationSpan) {
+                        validationSpan.textContent = '';
+                    }
+                });
+            });
+        });
+    </script>
+}

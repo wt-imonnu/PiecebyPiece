@@ -3,59 +3,15 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var activeClass = "nav-item-active";
+    var selectedSubjects = ViewBag.SelectedSubjects as List<string>;
 }
 
 
 
 <center><span class="header-title">Courses Panel</span></center>
 
-
-
-@{
-    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
-
-    var activeClass = "nav-item-active";
-}
-
-<style>
-    .nav-item-active {
-        border-radius: 100px;
-        background-color: #5AB2A6;
-        transition: all 0.3s ease;
-        text-decoration: none;
-    }
-
-        .nav-item-active .nav-link {
-            color: #fff !important;
-            text-decoration: none;
-        }
-</style>
-<div class="box-body" style="padding: 10px; margin-bottom: 20px;">
-    <div class="d-flex justify-content-center" style="white-space: nowrap;">
-        <ul class="nav nav-pills admin-sub-nav">
-            <li class="nav-item @(currentController == "cEnrollment" ? activeClass : "")" style="margin: 0 5px;">
-                <a class="nav-link text-dark" asp-area="" asp-controller="cEnrollment" asp-action="Index" style="font-weight:600;">Enrollment</a>
-            </li>
-            <li class="nav-item @(currentController == "cCourse" ? activeClass : "")" style="margin: 0 5px;">
-                <a class="nav-link text-dark" asp-area="" asp-controller="cCourse" asp-action="Index" style="font-weight:600;">Course</a>
-            </li>
-            <li class="nav-item @(currentController == "cCertificate" ? activeClass : "")" style="margin: 0 5px;">
-                <a class="nav-link text-dark" asp-area="" asp-controller="cCertificate" asp-action="Index" style="font-weight:600;">Certificate</a>
-            </li>
-            <li class="nav-item @(currentController == "cUser" ? activeClass : "")" style="margin: 0 5px;">
-                <a class="nav-link text-dark" asp-area="" asp-controller="cUser" asp-action="Index" style="font-weight:600;">User</a>
-            </li>
-            <li class="nav-item @(currentController == "cAdminPanel" ? activeClass : "")" style="margin: 0 5px;">
-                <a class="nav-link text-dark" asp-area="" asp-controller="cAdminPanel" asp-action="Index" style="font-weight:600;">Admin</a>
-            </li>
-        </ul>
-    </div>
-</div>
-
-
-@{
-    var selectedSubjects = ViewBag.SelectedSubjects as List<string>;
-}
 
 <div class="box-body">
 
