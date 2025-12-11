@@ -21,13 +21,43 @@
             <div class="row">
                 <div class="form-group">
                     <label asp-for="userID" class="control-label">Select user to enroll</label>
-                    <select asp-for="userID" class="form-control" asp-items="ViewBag.userID"></select>
-                </div>
-                <div class="form-group">
-                    <label asp-for="courseID" class="control-label">Select course to enroll</label>
-                    <select asp-for="courseID" class="form-control" asp-items="ViewBag.courseID"></select>
+                    <select asp-for="userID" class="form-control d-none" id="userIDSelect" asp-items="ViewBag.userID"></select>
+                    <input type="hidden" asp-for="userID" id="hiddenUserID" />
+
+                    <div class="dropdown custom-dropdown-container" data-target-id="userIDSelect" data-hidden-id="hiddenUserID">
+                        <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start"
+                                type="button"
+                                id="userIDDropdownButton"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                            -- Select User --
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="userIDDropdownButton"></ul>
+                    </div>
+                    <span asp-validation-for="userID" class="text-danger"></span>
                 </div>
             </div>
+
+            <div class="row" style="margin-bottom: 50px;">
+                <div class="form-group">
+                    <label asp-for="courseID" class="control-label">Select course to enroll</label>
+                    <select asp-for="courseID" class="form-control d-none" id="courseIDSelect" asp-items="ViewBag.courseID"></select>
+                    <input type="hidden" asp-for="courseID" id="hiddenCourseID" />
+
+                    <div class="dropdown custom-dropdown-container" data-target-id="courseIDSelect" data-hidden-id="hiddenCourseID">
+                        <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start"
+                                type="button"
+                                id="courseIDDropdownButton"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                            -- Select Course --
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="courseIDDropdownButton"></ul>
+                    </div>
+                    <span asp-validation-for="courseID" class="text-danger"></span>
+                </div>
+            </div>
+
         </div>
         <div class="row" style="margin-top: 10px;">
             <div class="col-md-6 mb-2">
@@ -43,9 +73,72 @@
 
 
 
-
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            function initializeCustomDropdown(containerSelector) {
+                const $container = $(containerSelector);
+                const targetSelectId = $container.data('target-id');
+                const hiddenInputId = $container.data('hidden-id');
+                const $originalSelect = $('#' + targetSelectId);
+                const $hiddenInput = $('#' + hiddenInputId);
+                const $dropdownButton = $container.find('.dropdown-toggle');
+                const $dropdownList = $container.find('.dropdown-menu');
+                const placeholderText = $dropdownButton.text().trim();
+
+                $dropdownList.empty();
+                $originalSelect.find('option').each(function () {
+                    const $option = $(this);
+                    const value = $option.val();
+                    const text = $option.text().trim();
+
+                    const $listItem = $('<li>');
+                    const $anchor = $('<a>')
+                        .addClass('dropdown-item custom-dropdown-item')
+                        .attr('href', '#')
+                        .data('value', value)
+                        .text(text);
+                    $listItem.append($anchor);
+                    $dropdownList.append($listItem);
+                });
+
+                $dropdownList.on('click', '.custom-dropdown-item', function (e) {
+                    e.preventDefault();
+                    const $clickedItem = $(this);
+                    const selectedValue = $clickedItem.data('value');
+                    const selectedText = $clickedItem.text().trim();
+
+                    $hiddenInput.val(selectedValue).trigger('change');
+                    $originalSelect.val(selectedValue).trigger('change');
+
+                    if (selectedValue === "") {
+                        $dropdownButton.text(placeholderText);
+                    } else {
+                        $dropdownButton.text(selectedText);
+                    }
+
+                    const validationTarget = $hiddenInput.attr('asp-for') || $hiddenInput.attr('name');
+                    $(`span[data-valmsg-for="${validationTarget}"]`).text('');
+                });
+
+                const initialValue = $originalSelect.val();
+                if (initialValue) {
+                    const $initialItem = $dropdownList.find(`.custom-dropdown-item[data-value="${initialValue}"]`);
+                    if ($initialItem.length) {
+                         $dropdownButton.text($initialItem.text().trim());
+                    }
+                }
+            }
+
+            initializeCustomDropdown('[data-target-id="userIDSelect"]');
+            initializeCustomDropdown('[data-target-id="courseIDSelect"]');
+        });
+    </script>
 }

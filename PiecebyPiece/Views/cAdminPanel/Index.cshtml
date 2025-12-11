@@ -3,58 +3,16 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var activeClass = "nav-item-active";
+    var selectedSubjects = ViewBag.SelectedSubjects as List<string>;
 }
 
 
 <center><span class="header-title">Admin Panel</span></center>
 
 
-@{
-    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
-    var activeClass = "nav-item-active";
-}
 
-<style>
-    .nav-item-active {
-        border-radius: 100px;
-        background-color: #5AB2A6;
-        transition: all 0.3s ease;
-        text-decoration: none;
-    }
-
-        .nav-item-active .nav-link {
-            color: #fff !important;
-            text-decoration: none;
-        }
-</style>
-<div class="box-body" style="padding: 10px; margin-bottom: 20px;">
-    <div class="d-flex justify-content-center" style="white-space: nowrap;">
-        <ul class="nav nav-pills admin-sub-nav">
-            <li class="nav-item @(currentController == "cEnrollment" ? activeClass : "")" style="margin: 0 5px;">
-                <a class="nav-link text-dark" asp-area="" asp-controller="cEnrollment" asp-action="Index" style="font-weight:600;">Enrollment</a>
-            </li>
-            <li class="nav-item @(currentController == "cCourse" ? activeClass : "")" style="margin: 0 5px;">
-                <a class="nav-link text-dark" asp-area="" asp-controller="cCourse" asp-action="Index" style="font-weight:600;">Course</a>
-            </li>
-            <li class="nav-item @(currentController == "cCertificate" ? activeClass : "")" style="margin: 0 5px;">
-                <a class="nav-link text-dark" asp-area="" asp-controller="cCertificate" asp-action="Index" style="font-weight:600;">Certificate</a>
-            </li>
-            <li class="nav-item @(currentController == "cUser" ? activeClass : "")" style="margin: 0 5px;">
-                <a class="nav-link text-dark" asp-area="" asp-controller="cUser" asp-action="Index" style="font-weight:600;">User</a>
-            </li>
-            <li class="nav-item @(currentController == "cAdminPanel" ? activeClass : "")" style="margin: 0 5px;">
-                <a class="nav-link text-dark" asp-area="" asp-controller="cAdminPanel" asp-action="Index" style="font-weight:600;">Admin</a>
-            </li>
-        </ul>
-    </div>
-</div>
-
-
-
-
-@{
-    var selectedSubjects = ViewBag.SelectedSubjects as List<string>;
-}
 <div class="box-body">
     <form asp-action="Index" method="get" id="filterForm" class="mb-3">
         <!-- Search -->
@@ -76,21 +34,29 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Admin Name</th>
-                    <th>Email</th>
-                    <th style="white-space: nowrap;"></th>
+                    <th style="width: 5%;">ID</th>
+                    <th style="width: 40%;">Admin</th>
+                    <th style="width: 30%;">Email</th>
+                    <th style="width: 15%;"></th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td>@Html.DisplayFor(modelItem => item.adminID)</td>
-                        <td>@Html.DisplayFor(modelItem => item.adminName) @Html.DisplayFor(modelItem => item.adminSurname)</td>
-                        <td>@Html.DisplayFor(modelItem => item.adminEmail)</td>
+                        <td>@item.adminID</td>
+                        <td>
+                            <div class="text-wrap text-break">
+                                @item.adminName @item.adminSurname
+                            </div>
+                        </td>
+                        <td>
+                            <div class="text-wrap text-break">
+                                @item.adminEmail
+                            </div>
+                        </td>
 
-                        <td style="white-space: nowrap;">
+                        <td>
                             <a asp-action="Details" asp-route-id="@item.adminID" class=" btn btn-black-icon" aria-label="button"><i class="bi bi-info-circle-fill"></i></a>
                             <a asp-action="Edit" asp-route-id="@item.adminID" class="btn btn-yellow-icon" aria-label="button"><i class="bi bi-pencil"></i></a>
                             @{

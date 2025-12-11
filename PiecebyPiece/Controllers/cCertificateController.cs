@@ -32,40 +32,36 @@ namespace PiecebyPiece.Controllers
         {
             var certificates = _context.dCertificate
                 .Include(cert => cert.Enrollment)
-                .ThenInclude(enroll => enroll.Course)
+                    .ThenInclude(enroll => enroll.Course) // ดึง Course
                 .Include(cert => cert.Enrollment)
-                .ThenInclude(enroll => enroll.User)
+                    .ThenInclude(enroll => enroll.User) // ดึง User
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(cSearch))
             {
                 string searchLower = cSearch.ToLower();
 
+                // 💡 เราจะใช้การค้นหาผ่าน Navigation Property แทนฟิลด์ที่ถูกลบออกไป
+                certificates = certificates.Where(cert =>
+                    cert.Enrollment.Course.courseName.ToLower().Contains(searchLower) || // ค้นหาจาก Course
+                    cert.Enrollment.User.userName.ToLower().Contains(searchLower) ||     // ค้นหาจาก User
+                    cert.Enrollment.User.userSurname.ToLower().Contains(searchLower)
+                );
+
                 if (int.TryParse(cSearch, out int searchId))
                 {
+                    // รวมตรรกะการค้นหาด้วย ID เข้าไป
                     certificates = certificates.Where(cert =>
                         cert.cerID == searchId ||
                         cert.enrollID == searchId ||
-                        cert.Enrollment.userID == searchId ||
-                        cert.courseName.ToLower().Contains(searchLower) ||
-                        cert.userName.ToLower().Contains(searchLower) ||
-                        cert.userSurname.ToLower().Contains(searchLower) ||
-                        cert.Enrollment.Course.courseName.ToLower().Contains(searchLower)
-                    );
-                }
-                else
-                {
-                    certificates = certificates.Where(cert =>
-                        cert.courseName.ToLower().Contains(searchLower) ||
-                        cert.userName.ToLower().Contains(searchLower) ||
-                        cert.userSurname.ToLower().Contains(searchLower) ||
-                        cert.Enrollment.Course.courseName.ToLower().Contains(searchLower)
+                        cert.Enrollment.userID == searchId
                     );
                 }
             }
 
             if (cFilter != null && cFilter.Count > 0)
             {
+                // การกรองด้วย Course Subject (ยังคงถูกต้อง)
                 certificates = certificates.Where(cert => cFilter.Contains(cert.Enrollment.Course.courseSubject));
             }
 

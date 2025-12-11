@@ -239,15 +239,34 @@
     transition: all 0.2s ease-in-out;
 }
 
-    /* 🌟 สไตล์สำหรับตัวเลือกที่ถูกต้อง (Correct Answer) 🌟 */
     .card-question.bg-true {
         border: none;
         background-color: #198754;
         color: #fff !important;
     }
 
-    /* 🌟 สไตล์สำหรับตัวเลือกที่ไม่ถูกเลือก/ค่าเริ่มต้น 🌟 */
     .card-question.bg-false {
-        border: 1px solid #dee2e6; /* เทาอ่อน */
+        border: 1px solid #dee2e6; 
         color: #212529;
     }
+
+
+
+.dropdown-menu {
+    max-height: 200px;
+    z-index: 1050;
+    overflow-y: auto;
+    overflow-x: hidden;
+    white-space: normal;
+}
+.dropdown-item {
+    white-space: normal;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    box-sizing: border-box;
+}
+.dropdown-toggle {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

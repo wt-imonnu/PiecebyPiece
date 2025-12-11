@@ -17,40 +17,7 @@
     var activeClass = "nav-item-active";
 }
 
-<style>
-    .nav-item-active {
-        border-radius: 100px;
-        background-color: #5AB2A6;
-        transition: all 0.3s ease;
-        text-decoration: none;
-    }
 
-        .nav-item-active .nav-link {
-            color: #fff !important;
-            text-decoration: none;
-        }
-</style>
-<div class="box-body" style="padding: 10px; margin-bottom: 20px;">
-    <div class="d-flex justify-content-center" style="white-space: nowrap;">
-        <ul class="nav nav-pills admin-sub-nav">
-            <li class="nav-item @(currentController == "cEnrollment" ? activeClass : "")" style="margin: 0 5px;">
-                <a class="nav-link text-dark" asp-area="" asp-controller="cEnrollment" asp-action="Index" style="font-weight:600;">Enrollment</a>
-            </li>
-            <li class="nav-item @(currentController == "cCourse" ? activeClass : "")" style="margin: 0 5px;">
-                <a class="nav-link text-dark" asp-area="" asp-controller="cCourse" asp-action="Index" style="font-weight:600;">Course</a>
-            </li>
-            <li class="nav-item @(currentController == "cCertificate" ? activeClass : "")" style="margin: 0 5px;">
-                <a class="nav-link text-dark" asp-area="" asp-controller="cCertificate" asp-action="Index" style="font-weight:600;">Certificate</a>
-            </li>
-            <li class="nav-item @(currentController == "cUser" ? activeClass : "")" style="margin: 0 5px;">
-                <a class="nav-link text-dark" asp-area="" asp-controller="cUser" asp-action="Index" style="font-weight:600;">User</a>
-            </li>
-            <li class="nav-item @(currentController == "cAdminPanel" ? activeClass : "")" style="margin: 0 5px;">
-                <a class="nav-link text-dark" asp-area="" asp-controller="cAdminPanel" asp-action="Index" style="font-weight:600;">Admin</a>
-            </li>
-        </ul>
-    </div>
-</div>
 
 
 
@@ -99,11 +66,11 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Date</th>
-                    <th>Fullname</th>
-                    <th>Course</th>
-                    <th style="white-space: nowrap;"></th>
+                    <th style="width: 5%;">ID</th>
+                    <th style="width: 15%;">Date</th>
+                    <th style="width: 20%;">Fullname</th>
+                    <th style="width: 30%;">Course</th>
+                    <th style="width: 15%;"></th>
                 </tr>
             </thead>
             <tbody>
@@ -111,15 +78,31 @@
                 {
                     <tr>
                         <td>@Html.DisplayFor(modelItem => item.cerID)</td>
-                        <td>@Html.DisplayFor(modelItem => item.cerDate)</td>
-                        <td>@Html.DisplayFor(modelItem => item.userName) @Html.DisplayFor(modelItem => item.userSurname)</td>
+                        <td class="text-wrap text-break">
+                            @item.cerDate.ToString("dd MMMM yyyy")
+                        </td>
+                        <td class="text-wrap text-break">
+                            @Html.DisplayFor(modelItem => item.userName) @Html.DisplayFor(modelItem => item.userSurname)
+                        </td>
+                        <td class="text-wrap text-break">
+                            @{
+                                var course = item.Enrollment?.Course;
 
-                        <td style="white-space: normal;word-wrap: break-word;word-break: break-word;">
-                            @Html.DisplayFor(modelItem => item.courseName)
+                                string courseDisplay = "";
+                                if (course != null)
+                                {
+                                    courseDisplay = $"#{course.courseID} | {course.courseName}";
+                                }
+                                else
+                                {
+                                    courseDisplay = "Course information missing";
+                                }
+                            }
+                            @courseDisplay
                             <div class="card-id">(Enroll ID: #@Html.DisplayFor(modelItem => item.enrollID))</div>
                         </td>
 
-                        <td style="white-space: nowrap;">
+                        <td>
                             <a asp-action="Details" asp-route-id="@item.cerID" class=" btn btn-black-icon" aria-label="button"><i class="bi bi-info-circle-fill"></i></a>
                             <a asp-action="Edit" asp-route-id="@item.cerID" class="btn btn-yellow-icon" aria-label="button"><i class="bi bi-pencil"></i></a>
                             <a class="btn btn-pink-icon btn-delete-modal"
