@@ -6,13 +6,13 @@
     Layout = "~/Views/Shared/_Layout_Navbar.cshtml";
 }
 
-
-<center><span class="header-title">Create User</span></center>
-
-
 <div class="box-body">
 
-        <span class="text-muted">All certificates: @(Model?.Count() ?? 0)</span>
+    <div class="text-center">
+        <h1 class="display-4" style="padding-bottom:50px">My Certificate</h1>
+    </div>
+
+    <span class="text-muted">All certificates: @(Model?.Count() ?? 0)</span>
 
 
     <div class="mb-4">

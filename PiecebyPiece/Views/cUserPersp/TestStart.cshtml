@@ -18,8 +18,6 @@
              alt="Course Image" />
     </div>
 
-    
-
     <form asp-controller="cUserPersp" asp-action="Submit" method="post">
         @Html.AntiForgeryToken()
         <input type="hidden" name="testID" value="@Model.testID" />
@@ -27,6 +25,18 @@
         @foreach (var q in Model.Questions)
         {
             <div class="card p-3 my-3 question-block">
+                <!-- แสดงรูปถ้ามี -->
+                @if (!string.IsNullOrEmpty(q.questionPhotoPath))
+                {
+                    <div class="mb-3 text-center">
+                        <img src="@q.questionPhotoPath"
+                             alt="Question Image"
+                             class="img-fluid rounded"
+                             style="max-height: 250px; object-fit: contain;" />
+                    </div>
+                }
+
+                <!-- ข้อคำถาม -->
                 <p><strong>@q.questionText</strong></p>
 
                 <input type="hidden" name="questionID" value="@q.questionID" />
@@ -78,6 +88,4 @@
         <button type="submit" class="btn btn-black">Submit Test</button>
     </form>
 </div>
-</div>
-
 

@@ -44,7 +44,14 @@ body {
         background-color: #fff;
         border-radius: 50px;
         border: none;
-        padding: 30px 25px;
+        padding: 30px 20px;
+        overflow: hidden;
+    }
+    .box-body-sm {
+        background-color: #fff;
+        border-radius: 50px;
+        border: none;
+        padding: 50px 50px;
         overflow: hidden;
     }
 }

@@ -2,72 +2,66 @@
     ViewData["Title"] = "Contact Us";
 }
 
-<style>
-    .contact-wrapper {
-        max-width: 900px;
-        margin: 40px auto;
-        padding: 40px;
-        background: #ffffff;
-        border-radius: 18px;
-        box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
-        font-family: "Segoe UI", sans-serif;
-    }
+<div class="box-body">
+    <div class="home-container">
+        <div class="home-content">
+            <h1>Contact Us</h1>
+            <h3>PiecebyPiece แพลตฟอร์มคอร์สออนไลน์สำหรับทุกคน</h3>
+        </div>
 
-    .contact-title {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        font-size: 32px;
-        font-weight: 700;
-        margin-bottom: 25px;
-        color: #222;
-    }
-
-        .contact-title i {
-            font-size: 30px;
-            color: #d63c3c;
-        }
-
-    h2 {
-        font-size: 22px;
-        margin: 30px 0 15px;
-        font-weight: 700;
-        color: #222;
-    }
-
-    ul li {
-        margin-bottom: 10px;
-        font-size: 16px;
-    }
-
-        ul li b {
-            font-weight: 600;
-        }
-
-    .social {
-        color: #e63946;
-        font-weight: 600;
-    }
-</style>
-
-<div class="contact-wrapper">
-
-    <div class="contact-title">
-        <i class="bi bi-telephone-fill"></i>
-        ติดต่อเรา
+        <img src="~/images/pic5.jpg" alt="Background Image">
     </div>
 
-    <h2>ช่องทางการติดต่อ</h2>
-    <ul>
-        <li><b>ที่อยู่ :</b>  — เพิ่มข้อความที่นี่ —</li>
-        <li><b>โทรศัพท์ :</b> — เพิ่มเบอร์โทร —</li>
-        <li><b>อีเมล :</b> — เพิ่มอีเมล —</li>
-    </ul>
+    <!-- ส่วนล่าง 2 ฝั่ง -->
+    <div class="contact-section">
 
-    <h2>ช่องทางโซเชียล</h2>
-    <ul>
-        <li><b>Facebook :</b> <span class="social"> — ลิงก์ Facebook — </span></li>
-        <li><b>Instagram :</b> <span class="social"> — ลิงก์ Instagram — </span></li>
-    </ul>
+        <!-- ฝั่งซ้าย: ข้อมูลติดต่อ -->
+        <div class="contact-info">
+            <h2 style="padding-bottom:20px">Get in Touch</h2>
+            <div class="text-start">
+                <p><strong>Email:</strong> xxx@gmail.com</p>
+                <p><strong>Phone:</strong> 0xx-xxx-xxxx</p>
+                <p><strong>Address:</strong> Bangkok, Thailand</p>
+            </div>
+
+            <!-- Social Buttons -->
+            <div class="social-links mt-4">
+                <a href="https://facebook.com/" target="_blank" class="social-btn fb">
+                    <i class="bi bi-facebook"></i>
+                </a>
+                <a href="https://instagram.com/" target="_blank" class="social-btn ig">
+                    <i class="bi bi-instagram"></i>
+                </a>
+                <a href="https://x.com/" target="_blank" class="social-btn x">
+                    <i class="bi bi-twitter-x"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- ฝั่งขวา: ฟอร์มอีเมล -->
+        <div class="contact-form">
+            <h2 class="text-center">Send Message</h2>
+
+            <form method="post" action="/Contact/SendMessage">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" name="Name" placeholder="Your Name" required>
+                    <label>Your Name</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" name="Email" placeholder="Email Address" required>
+                    <label>Email Address</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <textarea class="form-control" name="Message" placeholder="Message" style="height: 100px" required></textarea>
+                    <label>Message</label>
+                </div>
+
+                <button type="submit" class="btn btn-yellow w-100">Send</button>
+            </form>
+        </div>
+
+    </div> <!-- contact-section -->
 
 </div>
