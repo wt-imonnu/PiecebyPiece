@@ -57,32 +57,52 @@
             {
                 <div class="col">
                     <a asp-controller="cUserPersp" asp-action="CourseDetails" asp-route-id="@course.courseID" class="text-decoration-none text-dark">
-                        <div class="card h-100">
+                        <div class="card h-100 d-flex flex-column">
                             @if (!string.IsNullOrEmpty(course.coursePhotoPath))
                             {
                                 <img src="@course.coursePhotoPath" class="card-img-top" alt="@course.courseName" style="height:200px; object-fit:cover;" />
                             }
-                            <div class="card-body text-start">
+                            <div class="card-body text-start d-flex flex-column">
                                 <h5 class="card-title">@course.courseName</h5>
-                                <p class="card-text">
+
+                                @{
+                                    string desc = course.courseDescription ?? "";
+                                    string shortDesc = desc.Length > 40
+                                    ? desc.Substring(0, 40) + "..."
+                                    : desc;
+                                }
+
+                                <p class="card-text mb-2">
                                     Subject: @course.courseSubject <br />
-                                    @course.courseDescription
+
+                                    @if (course.courseDescription != null && course.courseDescription.Length > 40)
+                                    {
+                                        @shortDesc
+                                        <span style="color: gray; text-decoration: underline;">
+                                            Read More
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        @course.courseDescription
+                                    }
                                 </p>
 
-                                @if (enrolledCourseIDs.Contains(course.courseID))
-                                {
-                                    <a class="btn btn-disabled disabled-link">Enrolled</a>
-                                }
-                                else
-                                {
-                                    <a asp-controller="cUserPersp"
-                                       asp-action="EnrollCourse"
-                                       asp-route-courseID="@course.courseID"
-                                       class="btn btn-yellow">
-                                        Enroll
-                                    </a>
-
-                                }
+                                <div class="mt-auto">
+                                    @if (enrolledCourseIDs.Contains(course.courseID))
+                                    {
+                                        <a class="btn btn-disabled disabled-link">Enrolled</a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-controller="cUserPersp"
+                                           asp-action="EnrollCourse"
+                                           asp-route-courseID="@course.courseID"
+                                           class="btn btn-yellow">
+                                            Enroll
+                                        </a>
+                                    }
+                                </div>
                             </div>
                         </div>
                     </a>

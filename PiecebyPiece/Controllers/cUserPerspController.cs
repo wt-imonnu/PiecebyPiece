@@ -518,7 +518,7 @@ namespace PiecebyPiece.Controllers
             else
             {
                 progress.progressPercent = (float)percent;
-                progress.isPassedTest = passStatus;
+                progress.isPassedTest = progress.isPassedTest || passStatus;   // ผ่านแล้วผ่านเลย
                 progress.lastUpdate = DateTime.Now;
                 _context.dLessonProgress.Update(progress);
             }

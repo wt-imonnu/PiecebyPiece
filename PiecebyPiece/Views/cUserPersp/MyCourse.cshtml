@@ -18,31 +18,52 @@
 }
 
 <div class="navigation mb-2">
-    <div class="row align-items-center"> <!-- align-items-center ทำให้แนวตั้งอยู่ตรงกลาง -->
+    <div class="row align-items-center">
+
         <!-- Prev Button -->
-        <div class="col-md-2">
-            <a href="@Url.Action("MyCourse", new { index = index - 1 })" class="btn btn-black w-100"> Prev </a>
+        <div class="col-2 col-md-2">
+            <!-- แสดงข้อความบน md+, icon บน sm- -->
+            <a href="@Url.Action("MyCourse", new { index = index - 1 })"
+               class="btn btn-black w-100 d-none d-md-block">
+                Prev
+            </a>
+            <a href="@Url.Action("MyCourse", new { index = index - 1 })"
+               class="btn btn-black-icon d-block d-md-none">
+                <i class="bi bi-arrow-left"></i> <!-- ลูกศรซ้าย -->
+            </a>
         </div>
 
         <!-- Dropdown -->
-        <div class="col-md-8">
-            <form method="get" action="@Url.Action("MyCourse")">
+        <div class="col-8 col-md-8">
+            <form method="get" action="@Url.Action("MyCourse")" class="d-flex align-items-center gap-2">
                 <select name="index" class="form-select" onchange="this.form.submit()">
-
                     @for (int i = 0; i < courseList.Count; i++)
                     {
-                        <option value="@i" selected="@(i == index)"> @courseList[i].courseName </option>
+                        <option value="@i" selected="@(i == index)">
+                            @courseList[i].courseName
+                        </option>
                     }
                 </select>
             </form>
         </div>
 
         <!-- Next Button -->
-        <div class="col-md-2">
-            <a href="@Url.Action("MyCourse", new { index = index + 1 })" class="btn btn-yellow w-100"> Next </a>
+        <div class="col-2 col-md-2">
+            <!-- แสดงข้อความบน md+, icon บน sm- -->
+            <a href="@Url.Action("MyCourse", new { index = index + 1 })"
+               class="btn btn-yellow w-100 d-none d-md-block">
+                Next
+            </a>
+            <a href="@Url.Action("MyCourse", new { index = index + 1 })"
+               class="btn btn-yellow-icon d-block d-md-none">
+                <i class="bi bi-arrow-right"></i> <!-- ลูกศรขวา -->
+            </a>
+
         </div>
+
     </div>
 </div>
+
 
 <div class="course-container">
     @switch(index)
@@ -70,19 +91,20 @@
 
                             bool canAccess = previousPassed;
 
-                                <div class="col-md-4 mb-3">
-                                    @if (canAccess)
-                                    {
-                                        <!-- บทปลดล็อก -->
-                                        <a href="@Url.Action("LearnLesson", "cUserPersp", new { lessonID = lesson.lessonID })"
-                                           style="text-decoration: none; color: inherit;">
-                                            <div class="card h-100 shadow-sm">
-                                                <div class="card-body">
+                            <div class="col-md-4 mb-3">
+                                @if (canAccess)
+                                {
+                                    <!-- บทปลดล็อก -->
+                                    <a href="@Url.Action("LearnLesson", "cUserPersp", new { lessonID = lesson.lessonID })"
+                                       style="text-decoration: none; color: inherit;">
+                                        <div class="card h-100 shadow-sm">
+                                            <div class="card-body d-flex flex-column">
 
-                                                    <h5 class="card-title">@lesson.lessonName</h5>
-                                                    <p class="card-text">@lesson.lessonDescription</p>
+                                                <h5 class="card-title">@lesson.lessonName</h5>
+                                                <p class="card-text">@lesson.lessonDescription</p>
 
-                                                @if (lessonWasPassed)
+                                                <div class="mt-auto">
+                                                    @if (lessonWasPassed)
                                                     {
                                                         <span class="badge bg-success">Completed</span>
                                                     }
@@ -90,23 +112,28 @@
                                                     {
                                                         <span class="badge bg-primary">Available</span>
                                                     }
-
                                                 </div>
+
                                             </div>
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        <!-- บทถูกล็อก -->
-                                        <div class="card h-100 shadow-sm" style="opacity:0.5;">
-                                            <div class="card-body">
-                                                <h5>@lesson.lessonName</h5>
-                                                <p>@lesson.lessonDescription</p>
-                                                <span class="badge bg-danger">Locked</span>
-                                             </div>
                                         </div>
-                                    }
-                                </div>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <!-- บทถูกล็อก -->
+                                    <div class="card h-100 shadow-sm" style="opacity:0.5;">
+                                        <div class="card-body d-flex flex-column">
+                                            <h5>@lesson.lessonName</h5>
+                                            <p>@lesson.lessonDescription</p>
+
+                                            <div class="mt-auto">
+                                                <span class="badge bg-danger">Locked</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
 
                             previousPassed = lessonWasPassed;
 

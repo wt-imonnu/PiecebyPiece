@@ -4,114 +4,86 @@
     ViewData["Title"] = "Sign Up";
 }
 
-<style>
-    body {
-        background: #65b6ac;
-        font-family: 'Segoe UI', sans-serif;
-    }
 
-    .signup-card {
-        background: #ffffff;
-        padding: 35px 45px;
-        border-radius: 15px;
-        max-width: 520px;
-        margin: 40px auto;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    }
 
-    .signup-title {
-        text-align: center;
-        font-size: 32px;
-        font-weight: 700;
-        margin-bottom: 20px;
-        color: #333;
-    }
-
-    .form-group label {
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 5px;
-    }
-
-    .form-control {
-        padding: 10px 13px;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-    }
-
-    .btn-primary {
-        width: 100%;
-        padding: 12px;
-        border-radius: 8px;
-        font-size: 18px;
-        font-weight: bold;
-    }
-
-    .back-link {
-        display: block;
-        margin-top: 15px;
-        text-align: center;
-        color: #004fff;
-        font-weight: 500;
-    }
-
-        .back-link:hover {
-            text-decoration: underline;
-        }
-</style>
-
-<center><span class="header-title">Sign Up</span></center>
-<div class="signup-card">
-
+<div class="box-body">
+    <div class="text-center">
+        <h1 class="display-4" style="padding-bottom:50px">Sign Up</h1>
+    </div>
 
     <form asp-action="SignUp" enctype="multipart/form-data" method="post">
-
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-        <!-- Name -->
-        <div class="form-group mb-3">
-            <label asp-for="userName"></label>
-            <input asp-for="userName" class="form-control" />
-            <span asp-validation-for="userName" class="text-danger"></span>
-        </div>
+        <div class="row">
+            <!-- First Name -->
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input asp-for="userName" class="form-control" id="floatingName" placeholder="Name" />
+                    <label asp-for="userName" for="floatingName">First Name</label>
+                </div>
+                <span asp-validation-for="userName" class="text-danger"></span>
+            </div>
 
-        <!-- Surname -->
-        <div class="form-group mb-3">
-            <label asp-for="userSurname"></label>
-            <input asp-for="userSurname" class="form-control" />
-            <span asp-validation-for="userSurname" class="text-danger"></span>
+            <!-- Surname -->
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input asp-for="userSurname" class="form-control" id="floatingSurname" placeholder="Surname" />
+                    <label asp-for="userSurname" for="floatingSurname">Surname</label>
+                </div>
+                <span asp-validation-for="userSurname" class="text-danger"></span>
+            </div>
         </div>
 
         <!-- Email -->
-        <div class="form-group mb-3">
-            <label asp-for="userEmail"></label>
-            <input asp-for="userEmail" class="form-control" />
+        <div class="form-floating mb-3">
+            <input asp-for="userEmail" class="form-control" id="floatingEmail" placeholder="name@example.com" />
+            <label asp-for="userEmail" for="floatingEmail">Email</label>
             <span asp-validation-for="userEmail" class="text-danger"></span>
         </div>
 
-        <!-- Password -->
-        <div class="form-group mb-3">
-            <label asp-for="userPassword"></label>
-            <input asp-for="userPassword" type="password" class="form-control" />
-            <span asp-validation-for="userPassword" class="text-danger"></span>
-        </div>
+        <div class="row">
+            <!-- Password -->
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input asp-for="userPassword" type="password" class="form-control" id="floatingPassword" placeholder="Password" />
+                    <label asp-for="userPassword" for="floatingPassword">Password</label>
+                </div>
+                <span asp-validation-for="userPassword" class="text-danger"></span>
+            </div>
 
-        <!-- Confirm Password -->
-        <div class="form-group mb-3">
-            <label asp-for="userConfirmPassword">Confirm Password</label>
-            <input asp-for="userConfirmPassword" type="password" class="form-control" />
-            <span asp-validation-for="userConfirmPassword" class="text-danger"></span>
+            <!-- Confirm Password -->
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input asp-for="userConfirmPassword" type="password" class="form-control" id="floatingConfirmPassword" placeholder="Confirm Password" />
+                    <label asp-for="userConfirmPassword" for="floatingConfirmPassword">Confirm Password</label>
+                </div>
+                <span asp-validation-for="userConfirmPassword" class="text-danger"></span>
+            </div>
         </div>
 
         <!-- Photo -->
-        <div class="form-group mb-3">
-            <label asp-for="userPhoto"></label>
-            <input asp-for="userPhoto" type="file" accept="image/*" class="form-control" />
+        <div class="mb-3">
+            <div class="d-flex align-items-center">
+                <label asp-for="userPhoto" class="me-2 fw-semibold" style="white-space: nowrap;">
+                    Upload Profile : 
+                </label>
+
+                <input asp-for="userPhoto"
+                       type="file"
+                       accept="image/*"
+                       class="form-control" />
+            </div>
+
             <span asp-validation-for="userPhoto" class="text-danger"></span>
         </div>
 
+
+        <span asp-validation-for="userPhoto" class="text-danger"></span>
+
+
+
         <!-- Register Button -->
-        <center><button type="submit" class="btn btn-yellow">Register</button></center>
+        <center><button type="submit" class="btn btn-yellow">Sign Up</button></center>
 
     </form>
 </div>
